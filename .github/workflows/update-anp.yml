@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: bento-data-pages
+  group: beto-data-pages
   cancel-in-progress: false
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
       - name: Descobrir, validar e gerar dados da ANP
         id: update
         env:
-          BETO_PREVIOUS_BASE_URL: https://williamqf.github.io/bento-data
+          BETO_PREVIOUS_BASE_URL: https://williamqf.github.io/beto-data
         shell: bash
         run: |
           RESULT=$(python src/update_anp.py)
@@ -61,7 +61,7 @@ jobs:
         id: pages-status
         shell: bash
         run: |
-          if curl --silent --show-error --fail https://williamqf.github.io/bento-data/manifest.json -o /dev/null; then
+          if curl --silent --show-error --fail https://williamqf.github.io/beto-data/manifest.json -o /dev/null; then
             echo "initialized=true" >> "$GITHUB_OUTPUT"
           else
             echo "initialized=false" >> "$GITHUB_OUTPUT"

@@ -1,6 +1,6 @@
 # Beto Data
 
-Nome do repositório: `bento-data`.
+Nome do repositório: `beto-data`.
 
 Infraestrutura pública de dados do Beto. Este repositório é independente do app Android e contém apenas importadores, testes, documentação e dados agregados de fontes públicas.
 
@@ -33,19 +33,19 @@ Não há secrets necessários para a ANP. O workflow usa somente `GITHUB_TOKEN` 
 
 ## Configuração inicial no GitHub
 
-1. Crie `bento-data` como **Public** na conta `williamqf`.
+1. Crie `beto-data` como **Public** na conta `williamqf`.
 2. Envie o conteúdo desta pasta como raiz do repositório, incluindo `.github/` e `dist/`.
 3. Em **Settings → Pages → Build and deployment**, escolha **GitHub Actions**.
 4. Em **Settings → Actions → General → Workflow permissions**, mantenha acesso de leitura ao conteúdo; as permissões de Pages estão declaradas no workflow.
 5. Em **Actions**, execute **Beto Data — ANP** manualmente. O primeiro deploy publica o `dist/` versionado; o job também tenta buscar o resumo mais recente da ANP.
-6. Confirme `https://williamqf.github.io/bento-data/manifest.json` e um arquivo listado em `datasets`.
+6. Confirme `https://williamqf.github.io/beto-data/manifest.json` e um arquivo listado em `datasets`.
 
 ## Endpoint Android
 
 Após a URL do Pages responder corretamente, configure uma única vez no build Release:
 
 ```text
-https://williamqf.github.io/bento-data
+https://williamqf.github.io/beto-data
 ```
 
 O app Beto acrescenta `/manifest.json` e os caminhos relativos do manifesto. A URL é centralizada em `app/build.gradle` por `BuildConfig.BETO_DATA_BASE_URL`; não é repetida no repositório Android. O Debug aceita `BETO_DATA_DEBUG_URL` para apontar a servidor local, fixture servida por HTTP no ambiente de desenvolvimento ou endpoint de teste. Testes unitários usam fixtures em memória.

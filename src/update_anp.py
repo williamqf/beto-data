@@ -336,7 +336,7 @@ def seed_previous_publication(destination: Path, fetch=request) -> None:
     """Restore the last Pages dataset into the runner so no-op and size checks work across runs."""
     if (destination / "manifest.json").exists():
         return
-    base = os.environ.get("BETO_PREVIOUS_BASE_URL", "https://williamqf.github.io/bento-data").rstrip("/")
+    base = os.environ.get("BETO_PREVIOUS_BASE_URL", "https://williamqf.github.io/beto-data").rstrip("/")
     try:
         manifest_bytes = fetch(f"{base}/manifest.json")
         manifest = json.loads(manifest_bytes)
