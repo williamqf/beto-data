@@ -1,0 +1,83 @@
+name: Beto Data — ANP
+
+on:
+  schedule:
+    - cron: '20 12 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-anp.yml'
+      - 'src/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'dist/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bento-data-pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Beto Data
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements.txt
+
+      - name: Testes do pipeline
+        run: python -m unittest discover -s tests -v
+
+      - name: Descobrir, validar e gerar dados da ANP
+        id: update
+        env:
+          BETO_PREVIOUS_BASE_URL: https://williamqf.github.io/bento-data
+        shell: bash
+        run: |
+          RESULT=$(python src/update_anp.py)
+          echo "$RESULT"
+          echo "$RESULT" | python -c 'import json,sys; print("changed=" + str(json.load(sys.stdin)["changed"]).lower())' >> "$GITHUB_OUTPUT"
+
+      - name: Detectar primeira publicação
+        id: pages-status
+        shell: bash
+        run: |
+          if curl --silent --show-error --fail https://williamqf.github.io/bento-data/manifest.json -o /dev/null; then
+            echo "initialized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "initialized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configurar GitHub Pages
+        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        uses: actions/configure-pages@v5
+
+      - name: Preparar artefato público
+        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Publicar somente dist/ no GitHub Pages
+        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.xlsx
+*.csv
+*.tmp
+.venv/
+venv/
+.pytest_cache/
+.coverage
+coverage.xml
+*.log
+*.bak

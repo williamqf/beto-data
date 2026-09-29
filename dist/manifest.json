@@ -1,0 +1,153 @@
+{
+  "datasetVersion": "2026-09-20_2026-09-26",
+  "datasets": {
+    "AC": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/AC.json",
+      "recordCount": 12,
+      "sha256": "87f6986d44e9eb5a52b58ba511a59ee4a013e7bb2e6a6f6581f080271eca08c8"
+    },
+    "AL": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/AL.json",
+      "recordCount": 39,
+      "sha256": "8f7bd3be3289cbb3dc36296d3e551838a410d1f8e17efeba90cf9b706b28297b"
+    },
+    "AM": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/AM.json",
+      "recordCount": 24,
+      "sha256": "2892562c97f52c2546b97eabe8e11932d7dc98e6bea0794d9ed72d15bbb3f796"
+    },
+    "AP": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/AP.json",
+      "recordCount": 14,
+      "sha256": "6a306bb7677a44e2c3eb55af23ddbdb019a315be14033086e160faa0cf0b0659"
+    },
+    "BA": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/BA.json",
+      "recordCount": 164,
+      "sha256": "2ff9fad468be3f4f98ca2c82e7d3edadb5ee09017d3a2f516b1d6187edcf3c3a"
+    },
+    "BR": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/BR.json",
+      "recordCount": 7,
+      "sha256": "6b8987ff6b4031230fa3932ba5dba0173e36402493105ab425f2707794c9b0b7"
+    },
+    "CE": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/CE.json",
+      "recordCount": 63,
+      "sha256": "7c2d9b71fcddca80335f417d7592bb1e5713fdec5226ad9dd18bcb4b1874f048"
+    },
+    "DF": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/DF.json",
+      "recordCount": 12,
+      "sha256": "84a94fee2ef76f40676358710dc553a60e5861c7c09e7a622717d05c194f769b"
+    },
+    "ES": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/ES.json",
+      "recordCount": 72,
+      "sha256": "e8370166ccfc1beba2929d82b31be824f1c9b734f36d493c57fd082d90633607"
+    },
+    "GO": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/GO.json",
+      "recordCount": 96,
+      "sha256": "21fe632bcf64491a7ed08b6dd527831a49f3bac7b94d6477205fed3c01726d6c"
+    },
+    "MA": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/MA.json",
+      "recordCount": 66,
+      "sha256": "37f18fdfb5b927e40591708ee34eeae4863932eee13986ea8014c48c3999af48"
+    },
+    "MG": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/MG.json",
+      "recordCount": 324,
+      "sha256": "a8f7d6a60e359209ed973805da5d3c27ac2421978107451122a1b820a3533dad"
+    },
+    "MS": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/MS.json",
+      "recordCount": 38,
+      "sha256": "88a7e5b2ad83ef2e313d3fbc87d58d82b5583aa09ec487071f57c4fb061ea0ae"
+    },
+    "MT": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/MT.json",
+      "recordCount": 50,
+      "sha256": "17ee2f7795676e834a90c10875a69178840d98a67bc2ae78ff04c8ee6194155b"
+    },
+    "PA": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/PA.json",
+      "recordCount": 70,
+      "sha256": "24526b6262288a632cc81c2da1a2111feeb66fd07d112d646584b538da45c951"
+    },
+    "PB": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/PB.json",
+      "recordCount": 48,
+      "sha256": "4b5d434cda74947e1bd2e3f96497a9fbfd3b2929a957bbb2eead2f198472c393"
+    },
+    "PE": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/PE.json",
+      "recordCount": 104,
+      "sha256": "b1739c3deb4936e1826a96277ace8dba9d8a3a25b3f234b6dc259007aecc5fce"
+    },
+    "PI": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/PI.json",
+      "recordCount": 30,
+      "sha256": "67bb1b9016ac4cd0b29ebd35f523b7710ef43a248d7608949e225fa6b2e48add"
+    },
+    "PR": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/PR.json",
+      "recordCount": 167,
+      "sha256": "7a9d5080cffd3489d377901c8ddfff9a71bffa63738bbba08b90f0a74cddc399"
+    },
+    "RJ": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/RJ.json",
+      "recordCount": 188,
+      "sha256": "ef0de8e85a5340b59eb3838bce56c7f59d9423e44bbb6b03313a65681fe6d389"
+    },
+    "RN": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/RN.json",
+      "recordCount": 33,
+      "sha256": "2a787dd884819e01a8d79ceeb33b53d8d9e859cd0fe295b4d7f5c9612a27423f"
+    },
+    "RO": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/RO.json",
+      "recordCount": 30,
+      "sha256": "59e603aa6a3888208ba20676a591586f3e488e3da641ea7a697e4b8a8449eb2c"
+    },
+    "RR": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/RR.json",
+      "recordCount": 12,
+      "sha256": "ec2ff3466180c5f586250eac11a5dc35fd5c1816087b8cf136db53f8a8cd2629"
+    },
+    "RS": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/RS.json",
+      "recordCount": 219,
+      "sha256": "a503912ea425dcb9fbefb72b6467ee936ee9ebf7ea9d594a21e5e98b86140b1c"
+    },
+    "SC": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/SC.json",
+      "recordCount": 112,
+      "sha256": "5470412443c5ddd227c67a9fcccb333fbf30e00f8cfe5ff34264382eb9ab330e"
+    },
+    "SE": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/SE.json",
+      "recordCount": 26,
+      "sha256": "47ce9fa95c8c619e8e89d37db6612ea028a38158439ed62c7944d00d743a871a"
+    },
+    "SP": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/SP.json",
+      "recordCount": 592,
+      "sha256": "3a575b812778f0402c8b961b8a79923f168409a1c263021ebf750bbbe4c091b3"
+    },
+    "TO": {
+      "path": "datasets/fuel/2026-09-20_2026-09-26/TO.json",
+      "recordCount": 34,
+      "sha256": "b5410d8d49723fa526f77001e1d3cded57aef3c8b80f1fa8f9505ed2e526dc44"
+    }
+  },
+  "generatedAt": "2026-09-29T21:04:56+00:00",
+  "referenceEnd": "2026-09-26",
+  "referenceStart": "2026-09-20",
+  "schemaVersion": 1,
+  "source": "ANP",
+  "sourceIndex": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas",
+  "sourceName": "ANP — Levantamento de Preços de Combustíveis (resumo semanal)",
+  "sourceReference": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas"
+}
