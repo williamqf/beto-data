@@ -8,6 +8,14 @@ Infraestrutura pública de dados do Beto. Este repositório é independente do a
 
 A Fase 1 consome o resumo semanal oficial da ANP: [Levantamento de preços de combustíveis — últimas semanas pesquisadas](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas). A planilha é descoberta pelo índice oficial, validada e normalizada sem recalcular médias. O pacote contém dados nacionais e por UF, inclusive agregados municipais divulgados pela própria ANP; não contém preços identificáveis por posto.
 
+Os dados publicados têm origem na ANP e são atribuídos à agência; não são propriedade do Beto. O Beto não reivindica titularidade sobre os dados de origem. Consulte a fonte oficial para metodologia, período de referência e condições de reutilização.
+
+> O Beto é um projeto independente e não é afiliado, patrocinado ou endossado pela Agência Nacional do Petróleo, Gás Natural e Biocombustíveis — ANP.
+
+## Licença do código
+
+O código original do pipeline neste repositório é licenciado sob GNU GPL versão 3 (GPL-3.0-only), em linha com a licença já adotada no repositório principal do Beto. Consulte o [texto completo da GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html). Esta licença cobre o código do pipeline, não os dados da ANP, marcas, nomes ou materiais de terceiros. Os datasets mantêm a atribuição e as condições aplicáveis à fonte original.
+
 O app baixa o manifesto e somente os arquivos JSON versionados necessários. Cidade, placa, localização precisa, preferências, identificadores e logs dos motoristas não são enviados nem armazenados aqui. O nome da cidade escolhido no app permanece local; a UF seleciona o arquivo regional.
 
 Diesel e GLP podem existir no dataset da fonte, mas a UI atual do app oferece apenas combustíveis que ela suporta. Inmetro, placa e IPVA não fazem parte desta fase.
