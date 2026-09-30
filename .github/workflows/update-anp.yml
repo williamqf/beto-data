@@ -1,4 +1,4 @@
-name: Beto Data — ANP
+name: Beto Data — ANP + INMETRO
 
 on:
   schedule:
@@ -10,6 +10,7 @@ on:
       - '.github/workflows/update-anp.yml'
       - 'src/**'
       - 'tests/**'
+      - 'fixtures/**'
       - 'requirements.txt'
       - 'dist/**'
 
@@ -57,6 +58,20 @@ jobs:
           echo "$RESULT"
           echo "$RESULT" | python -c 'import json,sys; print("changed=" + str(json.load(sys.stdin)["changed"]).lower())' >> "$GITHUB_OUTPUT"
 
+      - name: Descobrir ciclos oficiais, validar e gerar dados do PBE Veicular
+        id: inmetro
+        # Um PDF novo/alterado não pode impedir a atualização independente da ANP.
+        continue-on-error: true
+        shell: bash
+        run: |
+          RESULT=$(python src/update_inmetro.py)
+          echo "$RESULT"
+          echo "$RESULT" | python -c 'import json,sys; print("changed=" + str(json.load(sys.stdin)["changed"]).lower())' >> "$GITHUB_OUTPUT"
+
+      - name: Avisar que o PBE manteve o último dataset válido
+        if: steps.inmetro.outcome == 'failure'
+        run: echo '::warning::Atualização do INMETRO cancelada por erro de descoberta/validação; o último dataset válido foi preservado. A publicação ANP continua independente.'
+
       - name: Detectar primeira publicação
         id: pages-status
         shell: bash
@@ -68,16 +83,16 @@ jobs:
           fi
 
       - name: Configurar GitHub Pages
-        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        if: steps.update.outputs.changed == 'true' || steps.inmetro.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
         uses: actions/configure-pages@v5
 
       - name: Preparar artefato público
-        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        if: steps.update.outputs.changed == 'true' || steps.inmetro.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - name: Publicar somente dist/ no GitHub Pages
-        if: steps.update.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
+        if: steps.update.outputs.changed == 'true' || steps.inmetro.outputs.changed == 'true' || steps.pages-status.outputs.initialized == 'false' || github.event_name == 'push'
         id: deployment
         uses: actions/deploy-pages@v4

@@ -124,6 +124,33 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual((dest / "manifest.json").read_bytes(), b"{}")
             self.assertTrue((dest / "datasets/fuel/test/MG.json").exists())
 
+    def test_anp_output_carries_forward_validated_inmetro_assets_and_manifest_branch(self):
+        with tempfile.TemporaryDirectory() as td:
+            previous = Path(td)
+            catalog = b'{"schemaVersion":1,"records":[]}'
+            year = b'{"schemaVersion":1,"records":[]}'
+            catalog_path = "datasets/vehicle-efficiency/catalog.json"
+            year_path = "datasets/vehicle-efficiency/2026.json"
+            (previous / catalog_path).parent.mkdir(parents=True)
+            (previous / catalog_path).write_bytes(catalog)
+            (previous / year_path).write_bytes(year)
+            previous_manifest = {"vehicleEfficiency": {"catalog": {"path": catalog_path, "sha256": hashlib.sha256(catalog).hexdigest()},
+                "cycles": {"2026": {"dataset": {"path": year_path, "sha256": hashlib.sha256(year).hexdigest()}}}}}
+            (previous / "manifest.json").write_text(json.dumps(previous_manifest), encoding="utf-8")
+            output = {"manifest.json": json.dumps({"schemaVersion": 1, "source": "ANP", "datasets": {"BR": {}}}).encode()}
+            merged = anp.preserve_vehicle_efficiency(output, previous)
+            self.assertIn(catalog_path, merged); self.assertIn(year_path, merged)
+            self.assertIn("vehicleEfficiency", json.loads(merged["manifest.json"]))
+
+    def test_anp_refuses_to_publish_if_existing_inmetro_asset_fails_checksum(self):
+        with tempfile.TemporaryDirectory() as td:
+            previous = Path(td)
+            path = "datasets/vehicle-efficiency/catalog.json"
+            (previous / path).parent.mkdir(parents=True); (previous / path).write_bytes(b"bad")
+            (previous / "manifest.json").write_text(json.dumps({"vehicleEfficiency": {"catalog": {"path": path, "sha256": "0" * 64}, "cycles": {}}}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Checksum INMETRO"):
+                anp.preserve_vehicle_efficiency({"manifest.json": b"{}"}, previous)
+
 
 if __name__ == "__main__":
     unittest.main()

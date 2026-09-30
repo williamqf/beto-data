@@ -282,6 +282,32 @@ def build_files(version: str, records: list[dict], generated_at: str) -> dict[st
     return files
 
 
+def preserve_vehicle_efficiency(files: dict[str, bytes], previous: Path) -> dict[str, bytes]:
+    """ANP publishes the shared Pages tree; carry the independently validated PBE branch through atomically."""
+    manifest_path = previous / "manifest.json"
+    if not manifest_path.exists():
+        return files
+    old_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    branch = old_manifest.get("vehicleEfficiency")
+    if not isinstance(branch, dict):
+        return files
+    for meta in [branch.get("catalog", {})] + [cycle.get("dataset", {}) for cycle in branch.get("cycles", {}).values()]:
+        path = meta.get("path")
+        if not path or not path.startswith("datasets/vehicle-efficiency/") or ".." in path:
+            raise ValueError("Caminho inválido na ramificação INMETRO publicada.")
+        asset = previous / path
+        if not asset.exists():
+            raise ValueError(f"Dataset INMETRO referenciado mas ausente: {path}")
+        body = asset.read_bytes()
+        if hashlib.sha256(body).hexdigest() != meta.get("sha256"):
+            raise ValueError(f"Checksum INMETRO inválido: {path}")
+        files[path] = body
+    new_manifest = json.loads(files["manifest.json"])
+    new_manifest["vehicleEfficiency"] = branch
+    files["manifest.json"] = json.dumps(new_manifest, ensure_ascii=False, sort_keys=True, indent=2).encode()
+    return files
+
+
 def sanity_against_previous(files: dict[str, bytes], previous: Path) -> None:
     old_manifest_path = previous / "manifest.json"
     if not old_manifest_path.exists():
@@ -319,6 +345,7 @@ def update(fetch=request, destination: Path = DIST, generated_at: str | None = N
     raw = fetch(source_url)
     version, records = parse_workbook(raw, source_url)
     files = build_files(version, records, generated_at or datetime.now(timezone.utc).isoformat(timespec="seconds"))
+    files = preserve_vehicle_efficiency(files, destination)
     sanity_against_previous(files, destination)
     old_manifest = destination / "manifest.json"
     if old_manifest.exists():
@@ -334,8 +361,6 @@ def update(fetch=request, destination: Path = DIST, generated_at: str | None = N
 
 def seed_previous_publication(destination: Path, fetch=request) -> None:
     """Restore the last Pages dataset into the runner so no-op and size checks work across runs."""
-    if (destination / "manifest.json").exists():
-        return
     base = os.environ.get("BETO_PREVIOUS_BASE_URL", "https://williamqf.github.io/beto-data").rstrip("/")
     try:
         manifest_bytes = fetch(f"{base}/manifest.json")
@@ -351,6 +376,29 @@ def seed_previous_publication(destination: Path, fetch=request) -> None:
             if hashlib.sha256(body).hexdigest() != entry.get("sha256"):
                 raise ValueError("Checksum da publicação anterior inválido.")
             files[path] = body
+        vehicle = manifest.get("vehicleEfficiency")
+        if isinstance(vehicle, dict):
+            entries = [vehicle.get("catalog", {})] + [cycle.get("dataset", {}) for cycle in vehicle.get("cycles", {}).values()]
+            for entry in entries:
+                path = entry.get("path", "")
+                if not path.startswith("datasets/vehicle-efficiency/") or ".." in path:
+                    raise ValueError("Caminho inválido na ramificação INMETRO publicada anteriormente.")
+                body = fetch(f"{base}/{path}")
+                if hashlib.sha256(body).hexdigest() != entry.get("sha256"):
+                    raise ValueError("Checksum da publicação INMETRO anterior inválido.")
+                files[path] = body
+        # Keep current local files too if remote is temporarily stale/unavailable for a branch.
+        local_manifest = destination / "manifest.json"
+        if local_manifest.exists():
+            local = json.loads(local_manifest.read_text(encoding="utf-8"))
+            if "vehicleEfficiency" in local and "vehicleEfficiency" not in manifest:
+                manifest["vehicleEfficiency"] = local["vehicleEfficiency"]
+                files["manifest.json"] = json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2).encode()
+                for entry in [manifest["vehicleEfficiency"].get("catalog", {})] + [c.get("dataset", {}) for c in manifest["vehicleEfficiency"].get("cycles", {}).values()]:
+                    path = entry.get("path", "")
+                    asset = destination / path
+                    if asset.exists() and hashlib.sha256(asset.read_bytes()).hexdigest() == entry.get("sha256"):
+                        files[path] = asset.read_bytes()
         publish_atomically(files, destination)
     except Exception as exc:
         # Before the first Pages deploy a 404 is normal. Upstream update still must be validated.

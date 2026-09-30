@@ -12,32 +12,42 @@ Os dados publicados têm origem na ANP e são atribuídos à agência; não são
 
 > O Beto é um projeto independente e não é afiliado, patrocinado ou endossado pela Agência Nacional do Petróleo, Gás Natural e Biocombustíveis — ANP.
 
+### INMETRO — PBE Veicular (Fase 2)
+
+O pipeline descobre os ciclos na [página oficial de veículos automotivos do PBE Veicular](https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular), baixa as tabelas oficiais e só publica após reconhecer o perfil da tabela, validar os registros e gerar os checksums. Os parsers dos documentos oficiais de 2021–2026 foram verificados localmente. Se a extração de uma atualização não alinhar os campos com segurança, o último dataset PBE válido é preservado e a etapa ANP continua independente. Ciclo PBE é guardado como origem e **não** é interpretado como ano/modelo. Anos anteriores a 2021 permanecem disponíveis para preenchimento manual até terem perfil de extração validado.
+
+O dataset mantém atributos técnicos para busca e, quando publicados, consumo urbano/rodoviário, consumo energético, autonomia elétrica, classe e selo. A sugestão automática do app nesta fase limita-se a consumo urbano para gasolina e etanol; cada combustível flex permanece separado. GNV, elétricos, híbridos e PHEV continuam manuais no app. PDFs não são incluídos na publicação Pages.
+
+Os dados do PBE Veicular são atribuídos ao INMETRO e não pertencem ao Beto. O Beto é independente e não é afiliado, patrocinado ou endossado pelo INMETRO.
+
 ## Licença do código
 
 O código original do pipeline neste repositório é licenciado sob GNU GPL versão 3 (GPL-3.0-only), em linha com a licença já adotada no repositório principal do Beto. Consulte o [texto completo da GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html). Esta licença cobre o código do pipeline, não os dados da ANP, marcas, nomes ou materiais de terceiros. Os datasets mantêm a atribuição e as condições aplicáveis à fonte original.
 
 O app baixa o manifesto e somente os arquivos JSON versionados necessários. Cidade, placa, localização precisa, preferências, identificadores e logs dos motoristas não são enviados nem armazenados aqui. O nome da cidade escolhido no app permanece local; a UF seleciona o arquivo regional.
 
-Diesel e GLP podem existir no dataset da fonte, mas a UI atual do app oferece apenas combustíveis que ela suporta. Inmetro, placa e IPVA não fazem parte desta fase.
+Diesel e GLP podem existir no dataset da ANP, mas a UI atual do app oferece apenas combustíveis que ela suporta. Consulta por placa e IPVA não fazem parte desta fase.
 
 ## Estrutura
 
 ```text
-.github/workflows/update-anp.yml  # valida, atualiza e publica
-src/update_anp.py                 # descoberta, parsing, validação e normalização
-tests/                             # fixtures sintéticas e testes offline
+.github/workflows/update-anp.yml  # valida ANP + PBE e publica a distribuição
+src/update_anp.py                 # pipeline ANP
+src/update_inmetro.py             # descoberta/PDF/validação do PBE Veicular
+tests/                             # fixtures pequenas e testes offline
 requirements.txt                   # dependências do pipeline
 dist/manifest.json                 # manifesto público consumido pelo Android
-dist/datasets/fuel/<versão>/*.json # dados públicos por Brasil/UF
+dist/datasets/fuel/<versão>/*.json # dados públicos ANP por Brasil/UF
+dist/datasets/vehicle-efficiency/  # catálogo e ciclos PBE normalizados
 ```
 
 O GitHub Pages publica **somente `dist/`**. Planilhas XLSX/CSV, arquivos temporários, cache do runner e código Android não são publicados.
 
 ## Atualização e publicação
 
-O workflow roda diariamente às 12:20 UTC (09:20 no horário de Brasília) e também pode ser iniciado manualmente em **Actions → Beto Data — ANP → Run workflow**. A fonte da ANP é semanal: o job valida diariamente, mas só substitui/publica os dados quando a versão semanal mudar. Se download, esquema ou validação falharem, a execução falha sem trocar o último dataset válido.
+O workflow roda diariamente às 12:20 UTC (09:20 no horário de Brasília) e também pode ser iniciado manualmente em **Actions → Beto Data — ANP + INMETRO → Run workflow**. A ANP só republica quando a versão semanal muda; o PBE verifica a página oficial e republica quando ciclos/tabelas ou conteúdos mudarem. Ambos preservam as ramificações um do outro no manifesto/distribuição. Se descoberta, download, esquema ou validação falharem, a execução falha sem substituir o último conjunto válido.
 
-Não há secrets necessários para a ANP. O workflow usa somente `GITHUB_TOKEN` efêmero com permissões `contents: read`, `pages: write` e `id-token: write`, concedidas pelo próprio GitHub Actions. Não configure token pessoal.
+Não há secrets necessários para ANP ou INMETRO. O workflow usa somente `GITHUB_TOKEN` efêmero com permissões `contents: read`, `pages: write` e `id-token: write`, concedidas pelo próprio GitHub Actions. Não configure token pessoal.
 
 ## Configuração inicial no GitHub
 
@@ -45,8 +55,8 @@ Não há secrets necessários para a ANP. O workflow usa somente `GITHUB_TOKEN` 
 2. Envie o conteúdo desta pasta como raiz do repositório, incluindo `.github/` e `dist/`.
 3. Em **Settings → Pages → Build and deployment**, escolha **GitHub Actions**.
 4. Em **Settings → Actions → General → Workflow permissions**, mantenha acesso de leitura ao conteúdo; as permissões de Pages estão declaradas no workflow.
-5. Em **Actions**, execute **Beto Data — ANP** manualmente. O primeiro deploy publica o `dist/` versionado; o job também tenta buscar o resumo mais recente da ANP.
-6. Confirme `https://williamqf.github.io/beto-data/manifest.json` e um arquivo listado em `datasets`.
+5. Em **Actions**, execute **Beto Data — ANP + INMETRO** manualmente. O job atualiza ambas as fontes oficiais e publica a distribuição integrada.
+6. Confirme `https://williamqf.github.io/beto-data/manifest.json`, o ramo `vehicleEfficiency` e os arquivos listados em `datasets`/`cycles`.
 
 ## Endpoint Android
 
@@ -66,6 +76,7 @@ Até o endpoint ser ativado no app, o preenchimento manual continua disponível.
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python src/update_anp.py
+python src/update_inmetro.py
 ```
 
-Os testes usam workbooks sintéticos pequenos, sem dados de motorista nem conexão externa. O diretório `dist/` contém a cópia versionada que inicializa a primeira publicação e permite validar os hashes.
+Os testes usam workbooks e registros sintéticos pequenos, sem depender de rede. O parser também é validado localmente contra os PDFs oficiais baixados durante o desenvolvimento; eles não são fixtures nem são publicados no Pages. O diretório `dist/` contém a cópia versionada que inicializa a primeira publicação e permite validar os hashes.

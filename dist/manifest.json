@@ -149,5 +149,94 @@
   "source": "ANP",
   "sourceIndex": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas",
   "sourceName": "ANP — Levantamento de Preços de Combustíveis (resumo semanal)",
-  "sourceReference": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas"
+  "sourceReference": "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas",
+  "vehicleEfficiency": {
+    "catalog": {
+      "path": "datasets/vehicle-efficiency/catalog.json",
+      "recordCount": 5534,
+      "sha256": "a446ed649920a7c43ab3256eaf089080fcde92cdc6efa381416ccec785f53e4f"
+    },
+    "cycles": {
+      "2021": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2021.json",
+          "recordCount": 1011,
+          "sha256": "97128f3f1210e6e21f1b71212c619a46ee6dd2b848ff20653866d1fe3a9cfe4e"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/veiculos-leves-2021/@@download/file",
+        "sha256": "3c2350a98cb5182f6d4c165be310f4edf4eb9b3162a92bf089be2a8005e2b6b7",
+        "sourceCycle": "Veículos leves 2021",
+        "sourceReferenceDate": "2025-01-03",
+        "sourceYear": 2021
+      },
+      "2022": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2022.json",
+          "recordCount": 747,
+          "sha256": "665af875ee62b0149e6a1b70576bece42885e344440269464e8d0120abdbf24f"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/pbe-veicular-2022.pdf/@@download/file",
+        "sha256": "64cadc11a252641f2568c0f0e5d5749189505d7a1f10a30a375e9f38f83b87fd",
+        "sourceCycle": "Veículos leves 2022",
+        "sourceReferenceDate": "2025-01-03",
+        "sourceYear": 2022
+      },
+      "2023": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2023.json",
+          "recordCount": 949,
+          "sha256": "35a25656f26a6d638f77cb578468b9864ab5788a063e346a934e9e90d95da242"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/pbe-veicular-2023.pdf/@@download/file",
+        "sha256": "04516e05656096455169655119e9a662a7de1f40bce4ed3d6cefa65fd96b0bc4",
+        "sourceCycle": "Veículos leves 2023 - 15º Ciclo",
+        "sourceReferenceDate": "2025-01-03",
+        "sourceYear": 2023
+      },
+      "2024": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2024.json",
+          "recordCount": 1030,
+          "sha256": "eecd8436f92fd1145309eae6c0db8d2d1f31459419fd1e6719ef3fd632903dd5"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/pbe-veicular-2024-1.pdf/@@download/file",
+        "sha256": "729f52c7959e72c74ca458c0023e812b48db5dcbddd8cc7ab19a3f0092bf3ffc",
+        "sourceCycle": "Veículos leves 2024 - 16º Ciclo",
+        "sourceReferenceDate": "2025-01-03",
+        "sourceYear": 2024
+      },
+      "2025": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2025.json",
+          "recordCount": 879,
+          "sha256": "3f4f60ba3800d7c09246711b4e8f2a3980eed2f7f8f05a67d538ac14fee7df15"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/mascara-pbev-2025-mar-11.pdf/@@download/file",
+        "sha256": "9528deace7d2cdf9db07d640eb086ef8191d35ef17f4ed467df08f7a57b1f39b",
+        "sourceCycle": "Veículos leves 2025 - 17º Ciclo",
+        "sourceReferenceDate": "2026-02-02",
+        "sourceYear": 2025
+      },
+      "2026": {
+        "dataset": {
+          "path": "datasets/vehicle-efficiency/2026.json",
+          "recordCount": 918,
+          "sha256": "454f1f7b3727ecfbbd85cceb83e8866cb640f1ed12ec876344640368a911f0ac"
+        },
+        "documentUrl": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular/mascara-pbev-2026_19_jan-rev01.pdf/@@download/file",
+        "sha256": "43e928f89a526f7b59013faca3501b2b0716e5a8cdc2e097b8653638aa688ba0",
+        "sourceCycle": "Veículos leves 2026 - 18º Ciclo",
+        "sourceReferenceDate": "2026-08-31",
+        "sourceYear": 2026
+      }
+    },
+    "datasetVersion": "ed35558748980507a405",
+    "generatedAt": "2026-09-30T08:20:54+00:00",
+    "recordCount": 5534,
+    "schemaVersion": 1,
+    "source": "INMETRO_PBE",
+    "sourceIndex": "https://www.gov.br/inmetro/pt-br/assuntos/regulamentacao/avaliacao-da-conformidade/programa-brasileiro-de-etiquetagem/tabelas-de-eficiencia-energetica/veiculos-automotivos-pbe-veicular",
+    "sourceName": "INMETRO — Programa Brasileiro de Etiquetagem Veicular (PBE Veicular)",
+    "sourceReferenceDate": "2026-08-31"
+  }
 }

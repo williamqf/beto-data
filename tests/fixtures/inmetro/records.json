@@ -1,0 +1,6 @@
+[
+  {"category":"Compacto","brand":"MARCA TESTE","model":"MODELO X","version":"1.0 MANUAL","engine":"1.0","propulsion":"Combustão","transmission":"M-5","fuel":"F","ethanol":"7,4","gasoline":"10,5","energy":"1,20","range":"\\","class":"B","conpet":"A"},
+  {"category":"Compacto","brand":"MARCA TESTE","model":"MODELO X","version":"1.0 AUTOMÁTICO","engine":"1.0","propulsion":"Combustão","transmission":"A-6","fuel":"F","ethanol":"7,2","gasoline":"10,1","energy":"1,25","range":"\\","class":"B","conpet":"B"},
+  {"category":"Médio","brand":"MARCA TESTE","model":"EV Z","version":"ELÉTRICO","engine":"Elétrico","propulsion":"Elétrico","transmission":"N.A.","fuel":"E","ethanol":"\\","gasoline":"\\","energy":"0,41","range":"280","class":"A","conpet":"-"},
+  {"category":"Médio","brand":"MARCA TESTE","model":"HIBRIDO H","version":"1.8 HEV","engine":"1.8","propulsion":"Híbrido","transmission":"A-CVT","fuel":"G","ethanol":"\\","gasoline":"16,2","energy":"0,75","range":"\\","class":"A","conpet":"A"}
+]
