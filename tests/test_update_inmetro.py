@@ -36,6 +36,11 @@ class InmetroPipelineTests(unittest.TestCase):
         self.assertEqual("Veículos leves 2021", items[0]["sourceCycle"])
         self.assertTrue(items[-1]["documentUrl"].startswith("https://www.gov.br/inmetro/"))
 
+    def test_discovers_historical_year_only_archives(self):
+        html = '<h2>Veículos leves 2010</h2><a href="/inmetro/arquivo/2010/@@download/file">2010</a><h2>Veículos leves 2026 - 18º Ciclo</h2><a href="/inmetro/arquivo/2026/@@download/file">2026</a>'
+        items = pbev.discover_cycles(html)
+        self.assertEqual([2010, 2026], [item["sourceYear"] for item in items])
+
     def test_discovery_fails_closed_on_missing_current_cycle_or_wrong_domain(self):
         with self.assertRaises(ValueError): pbev.discover_cycles('<h2>Veículos leves 2025 - 17º Ciclo</h2><a href="x.pdf">x</a>')
         with self.assertRaises(ValueError): pbev.discover_cycles('<h2>Veículos leves 2026 - 18º Ciclo</h2><a href="https://example.org/x.pdf">x</a>')
@@ -50,6 +55,19 @@ class InmetroPipelineTests(unittest.TestCase):
         self.assertEqual({}, records[2]["fuels"])
         # A hybrid may retain its directly published gasoline figure; the Android suggestion policy gates it out.
         self.assertEqual("Híbrido", records[3]["propulsionType"])
+
+    def test_2021_technical_column_positions_are_not_shifted_into_transmission(self):
+        row = [""] * 23
+        row[:10] = ["Compacto", "FIAT", "ARGO", "DRIVE", "1.3-8V", "M-5", "S", "E", "Combustão", "F"]
+        row[16:19] = ["8,8", "10,4", "12,8"]
+        row[19:21] = ["14,7", "1,57"]
+        batch = [list(row) for _ in range(32)]
+        for index, sample in enumerate(batch): sample[2] = f"ARGO {index}"
+        record = pbev.normalize_rows(batch, 2021, "Veículos leves 2021", None, "https://www.gov.br/inmetro/x.pdf")[0]
+        self.assertEqual("Combustão", record["propulsionType"])
+        self.assertEqual("M-5", record["transmission"])
+        self.assertEqual("S", record["airConditioning"])
+        self.assertEqual("E", record["steering"])
 
     def test_2026_official_fuel_labels_keep_ethanol_separate(self):
         row = [""] * 33
@@ -75,9 +93,60 @@ class InmetroPipelineTests(unittest.TestCase):
         records = pbev.normalize_rows(rows(), 2024, "Veículos leves 2024 - 16º Ciclo", None, "https://www.gov.br/inmetro/x.pdf")
         again = pbev.normalize_rows(rows(), 2024, "Veículos leves 2024 - 16º Ciclo", None, "https://www.gov.br/inmetro/x.pdf")
         self.assertEqual([r["id"] for r in records], [r["id"] for r in again])
-        files = pbev.build_files([{"sourceYear":2024,"sourceCycle":"Veículos leves 2024 - 16º Ciclo","sourceReferenceDate":None,"documentUrl":"https://www.gov.br/inmetro/x.pdf","records":records}], "2026-09-29T00:00:00Z")
+        historic_rows = []
+        for index in range(32):
+            row = [""] * 23
+            row[:9] = ["COMPACTO", "FIAT", "ARGO" if index == 0 else f"ARGO {index}", "DRIVE GSR", "1.3-8V", "MTA-5", "S", "E", "F"]
+            row[15:19] = ["8,9", "10,0", "12,7", "14,4"]
+            row[19:23] = ["1,55", "A", "B", "SIM"]
+            historic_rows.append(row)
+        historic = pbev.normalize_rows(historic_rows, 2019, "Veículos leves 2019", None, "https://www.gov.br/inmetro/x2019.pdf")
+        files = pbev.build_files([
+            {"sourceYear":2024,"sourceCycle":"Veículos leves 2024 - 16º Ciclo","sourceReferenceDate":None,"documentUrl":"https://www.gov.br/inmetro/x.pdf","records":records},
+            {"sourceYear":2019,"sourceCycle":"Veículos leves 2019","sourceReferenceDate":None,"documentUrl":"https://www.gov.br/inmetro/x2019.pdf","records":historic},
+        ], "2026-09-29T00:00:00Z")
         meta = json.loads(files["vehicleEfficiency"])
         self.assertEqual(hashlib.sha256(files[meta["catalog"]["path"]]).hexdigest(), meta["catalog"]["sha256"])
+        catalog = json.loads(files[meta["catalog"]["path"]])["records"]
+        gsr = next(item for item in catalog if item["sourceYear"] == 2019 and item["brand"] == "FIAT" and item["model"] == "ARGO" and item["version"] == "DRIVE GSR")
+        self.assertEqual((2019, "DRIVE GSR", "1.3-8V", "MTA-5"),
+            (gsr["sourceYear"], gsr["version"], gsr["engine"], gsr["transmission"]))
+        self.assertEqual(12.7, gsr["fuels"]["GASOLINE"]["urban"])
+        self.assertEqual(8.9, gsr["fuels"]["ETHANOL"]["urban"])
+
+    def test_historical_profiles_preserve_column_order_and_fuel_semantics(self):
+        cases = [
+            (2010, {0: "FIAT", 1: "PALIO", 2: "ELX", 3: "1.4 - 8V", 4: "M-5", 5: "S", 6: "H", 7: "F", 8: "8,9", 9: "12,7", 10: "10,0", 11: "14,4", 12: "A"}, "ELX", "1.4 - 8V"),
+            (2013, {0: "COMPACTO", 1: "FIAT", 2: "ARGO", 3: "1.3-8V", 4: "DRIVE GSR", 5: "MTA-5", 6: "S", 7: "E", 8: "F", 15: "8,9", 16: "10,0", 17: "12,7", 18: "14,4", 19: "1,55", 20: "A", 22: "SIM"}, "DRIVE GSR", "1.3-8V"),
+            (2017, {0: "COMPACTO", 1: "FIAT", 2: "ARGO", 3: "DRIVE GSR", 4: "1.3-8V", 5: "MTA-5", 6: "S", 7: "E", 8: "F", 15: "8,9", 16: "10,0", 17: "12,7", 18: "14,4", 19: "1,55", 20: "A", 22: "SIM"}, "DRIVE GSR", "1.3-8V"),
+            (2020, {0: "COMPACTO", 1: "FIAT", 2: "ARGO", 3: "1.3-8V", 4: "DRIVE GSR", 5: "MTA-5", 6: "S", 7: "E", 8: "F", 15: "8,9", 16: "10,0", 17: "12,7", 18: "14,4", 19: "1,55", 20: "A", 22: "SIM"}, "DRIVE GSR", "1.3-8V"),
+        ]
+        for year, values, expected_version, expected_engine in cases:
+            with self.subTest(year=year):
+                width = pbev.PROFILES[year]["columns"]
+                batch = []
+                for index in range(32):
+                    row = [""] * width
+                    for column, value in values.items(): row[column] = value
+                    row[pbev.PROFILES[year]["model"]] += f" {index}"
+                    batch.append(row)
+                record = pbev.normalize_rows(batch, year, f"Veículos leves {year}", None, "https://www.gov.br/inmetro/x.pdf")[0]
+                self.assertEqual(expected_version, record["version"])
+                self.assertEqual(expected_engine, record["engine"])
+                self.assertEqual("Combustão", record["propulsionType"])
+                self.assertEqual(12.7, record["fuels"]["GASOLINE"]["urban"])
+                self.assertEqual(8.9, record["fuels"]["ETHANOL"]["urban"])
+        # The 2010 compact table calls ethanol fuel "A"; 2012 uses "E".
+        for year, code in ((2010, "A"), (2012, "E")):
+            profile = pbev.PROFILES[year]; batch = []
+            for index in range(32):
+                row = [""] * profile["columns"]
+                row[0:8] = ["FIAT", f"UNO {index}", "MILLE", "1.0-8V", "M-5", "N", "M", code]
+                row[8:13] = ["8,9", "12,7", "10,7", "15,6", "A"]
+                batch.append(row)
+            record = pbev.normalize_rows(batch, year, f"Veículos leves {year}", None, "https://www.gov.br/inmetro/x.pdf")[0]
+            self.assertEqual(8.9, record["fuels"]["ETHANOL"]["urban"])
+            self.assertNotIn("GASOLINE", record["fuels"])
 
 
 if __name__ == "__main__": unittest.main()

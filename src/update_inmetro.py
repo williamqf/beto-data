@@ -20,12 +20,25 @@ ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 SCHEMA_VERSION = 1
 PROFILES = {
-    2021: {"columns": 23, "header_rows": 4, "propulsion": 8, "fuel": 9, "ethanol_urban": 16, "gasoline_urban": 18, "energy": 20, "range": None, "class": 21, "conpet": None},
-    2022: {"columns": 24, "header_rows": 3, "propulsion": 5, "fuel": 9, "ethanol_urban": 16, "gasoline_urban": 18, "energy": 20, "range": None, "class": 21, "conpet": 23},
-    2023: {"columns": 28, "header_rows": 4, "propulsion": 5, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
-    2024: {"columns": 28, "header_rows": 4, "propulsion": 5, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
-    2025: {"columns": 28, "header_rows": 4, "propulsion": 5, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
-    2026: {"columns": 33, "header_rows": 1, "propulsion": 5, "fuel": 9, "ethanol_urban": 18, "gasoline_urban": 21, "energy": 28, "range": 29, "class": 30, "conpet": 32},
+    # The 2010–2012 editions use the compact, 13-column table format.
+    2010: {"columns": 13, "header_rows": 3, "category": None, "brand": 0, "model": 1, "version": 2, "engine": 3, "transmission": 4, "air_conditioning": 5, "steering": 6, "propulsion": None, "fuel": 7, "ethanol_urban": 8, "gasoline_urban": 9, "road_offset": 2, "energy": None, "range": None, "class": 12, "conpet": None},
+    2011: {"columns": 13, "header_rows": 3, "category": None, "brand": 0, "model": 1, "version": 2, "engine": 3, "transmission": 4, "air_conditioning": 5, "steering": 6, "propulsion": None, "fuel": 7, "ethanol_urban": 8, "gasoline_urban": 9, "road_offset": 2, "energy": None, "range": None, "class": 12, "conpet": None},
+    2012: {"columns": 13, "header_rows": 3, "category": None, "brand": 0, "model": 1, "version": 2, "engine": 3, "transmission": 4, "air_conditioning": 5, "steering": 6, "propulsion": None, "fuel": 7, "ethanol_urban": 8, "gasoline_urban": 9, "road_offset": 2, "energy": None, "range": None, "class": 12, "conpet": None},
+    # 2013–2016 place engine before version; 2017 onward swaps those columns.
+    2013: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "engine": 3, "version": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2014: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "engine": 3, "version": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2015: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "engine": 3, "version": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2016: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "engine": 3, "version": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2017: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "version": 3, "engine": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2018: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "version": 3, "engine": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2019: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "version": 3, "engine": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2020: {"columns": 23, "header_rows": 0, "category": 0, "brand": 1, "model": 2, "version": 4, "engine": 3, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": None, "fuel": 8, "ethanol_urban": 15, "gasoline_urban": 17, "energy": 19, "range": None, "class": 20, "conpet": 22},
+    2021: {"columns": 23, "header_rows": 4, "transmission": 5, "air_conditioning": 6, "steering": 7, "propulsion": 8, "fuel": 9, "ethanol_urban": 16, "gasoline_urban": 18, "energy": 20, "range": None, "class": 21, "conpet": None},
+    2022: {"columns": 24, "header_rows": 3, "propulsion": 5, "transmission": 6, "air_conditioning": 7, "steering": 8, "fuel": 9, "ethanol_urban": 16, "gasoline_urban": 18, "energy": 20, "range": None, "class": 21, "conpet": 23},
+    2023: {"columns": 28, "header_rows": 4, "propulsion": 5, "transmission": 6, "air_conditioning": 7, "steering": 8, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
+    2024: {"columns": 28, "header_rows": 4, "propulsion": 5, "transmission": 6, "air_conditioning": 7, "steering": 8, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
+    2025: {"columns": 28, "header_rows": 4, "propulsion": 5, "transmission": 6, "air_conditioning": 7, "steering": 8, "fuel": 9, "ethanol_urban": 17, "gasoline_urban": 19, "energy": 23, "range": 24, "class": 25, "conpet": 27},
+    2026: {"columns": 33, "header_rows": 1, "propulsion": 5, "transmission": 6, "air_conditioning": 7, "steering": 8, "fuel": 9, "ethanol_urban": 18, "gasoline_urban": 21, "energy": 28, "range": 29, "class": 30, "conpet": 32},
 }
 
 
@@ -77,8 +90,8 @@ def discover_cycles(html: str, base_url: str = SOURCE_INDEX, years: set[int] | N
         if not year_match: continue
         year = int(year_match.group())
         if year > max(PROFILES): raise ValueError(f"Novo ciclo PBEV {year} encontrado, mas o parser ainda não foi homologado para este formato.")
-        # The official index labels 2021/2022 without a cycle number; retain its exact title.
-        if not re.search(r"\bciclo\b", item["sourceCycle"], re.I) and year not in {2021, 2022}: continue
+        # Historical archives and the 2021/2022 editions are labeled by year only.
+        if not re.search(r"\bciclo\b", item["sourceCycle"], re.I) and year not in set(range(2010, 2023)): continue
         if years and year not in years: continue
         if year not in PROFILES: continue
         cycle = int(match.group(2)) if match else None
@@ -161,8 +174,33 @@ def _iter_raw_rows(pdf, year: int):
                         yield [cells[col][idx] if idx < len(cells[col]) else "" for col in range(profile["columns"])], profile
                 else:
                     if row_index < profile["header_rows"]: continue
-                    yield [text(value) for value in row], profile
+                    cells = [text(value) for value in row]
+                    if year < 2021 and not _is_historical_data_row(cells, profile, year): continue
+                    yield cells, profile
     if not found_profile: raise ValueError(f"Perfil de tabela oficial não reconhecido para {year}.")
+
+
+def _historical_fuel_kind(code: str, year: int) -> str | None:
+    code = text(code).upper()
+    if code in {"G", "GASOLINA"}: return "GASOLINE"
+    if code == "F": return "FLEX"
+    if code in {"A", "E"} and year <= 2019: return "ETHANOL"
+    if code == "E100": return "ETHANOL"
+    if code == "E": return "ELECTRIC"
+    if code == "D": return "DIESEL"
+    return None
+
+
+def _is_historical_data_row(row: list[str], profile: dict, year: int) -> bool:
+    """Skip repeated multi-row PDF headers and title blocks without guessing their columns."""
+    try:
+        brand, model = text(row[profile["brand"]]), text(row[profile["model"]])
+        code = text(row[profile["fuel"]])
+        if not brand or not model or not _historical_fuel_kind(code, year): return False
+        values = (row[profile["ethanol_urban"]], row[profile["gasoline_urban"]])
+        return any(re.fullmatch(r"\s*(?:\d+(?:[,.]\d+)?|\\|-|ND|N\.D\.)\s*", text(value), re.I) for value in values)
+    except (IndexError, TypeError):
+        return False
 
 
 def _iter_2026_rows(pdf, fitz_document):
@@ -202,31 +240,41 @@ def normalize_rows(raw_rows: list[list], year: int, cycle: str, reference_date: 
     expected_width = profile["columns"]
     for row in raw_rows:
         if len(row) != expected_width: raise ValueError(f"Largura de linha inesperada no ciclo {year}.")
-        category, brand, model, version = (text(row[i]) for i in range(4))
+        category_index = profile.get("category", 0)
+        category = text(row[category_index]) if category_index is not None else ""
+        brand, model = (text(row[profile.get(field, default)]) for field, default in (("brand", 1), ("model", 2)))
+        version = text(row[profile.get("version", 3)]) if profile.get("version", 3) is not None else ""
         if not brand or not model or key(brand) in {"MARCA", "CATEGORIA"} or key(model) == "MODELO": continue
-        propulsion, official_fuel_code = text(row[profile["propulsion"]]), text(row[profile["fuel"]])
+        official_fuel_code = text(row[profile["fuel"]])
+        propulsion_index = profile.get("propulsion", 5)
+        propulsion = text(row[propulsion_index]) if propulsion_index is not None else ""
         fuel_code = official_fuel_code.upper()
         fuel_kind = {"G": "GASOLINE", "GASOLINA": "GASOLINE", "F": "FLEX", "E100": "ETHANOL",
                      "E": "ELECTRIC", "D": "DIESEL"}.get(fuel_code)
+        if year < 2021: fuel_kind = _historical_fuel_kind(fuel_code, year)
+        if year <= 2012 and fuel_code == "E": fuel_kind = "ETHANOL"
         if not fuel_kind and official_fuel_code:
             raise ValueError(f"Código de combustível PBEV desconhecido: {official_fuel_code!r} no ciclo {year}.")
         fuel_kind = fuel_kind or "UNSPECIFIED"
-        if not propulsion: raise ValueError(f"Propulsão ausente em {brand} {model} ({year}).")
+        if not propulsion:
+            propulsion = "Elétrico" if fuel_kind == "ELECTRIC" else "Combustão"
         # Do not interpret electric-equivalent / diesel columns as km/L for gasoline or ethanol.
         urban_ethanol = parse_number(row[profile["ethanol_urban"]], upper=80) if fuel_kind in {"FLEX", "ETHANOL"} else None
         urban_gasoline = parse_number(row[profile["gasoline_urban"]], upper=80) if fuel_kind in {"GASOLINE", "FLEX"} else None
         fuels = {}
         try:
-            if urban_gasoline is not None and fuel_kind in {"GASOLINE", "FLEX"}: fuels["GASOLINE"] = {"urban": urban_gasoline, "unit": "km/L", "road": parse_number(row[profile["gasoline_urban"] + 1], upper=300) if profile["gasoline_urban"] + 1 < expected_width else None}
-            if urban_ethanol is not None and fuel_kind in {"FLEX", "ETHANOL"}: fuels["ETHANOL"] = {"urban": urban_ethanol, "unit": "km/L", "road": parse_number(row[profile["ethanol_urban"] + 1], upper=300) if profile["ethanol_urban"] + 1 < expected_width else None}
+            road_offset = profile.get("road_offset", 1)
+            if urban_gasoline is not None and fuel_kind in {"GASOLINE", "FLEX"}: fuels["GASOLINE"] = {"urban": urban_gasoline, "unit": "km/L", "road": parse_number(row[profile["gasoline_urban"] + road_offset], upper=300) if profile["gasoline_urban"] + road_offset < expected_width else None}
+            if urban_ethanol is not None and fuel_kind in {"FLEX", "ETHANOL"}: fuels["ETHANOL"] = {"urban": urban_ethanol, "unit": "km/L", "road": parse_number(row[profile["ethanol_urban"] + road_offset], upper=300) if profile["ethanol_urban"] + road_offset < expected_width else None}
         except ValueError as exc:
             raise ValueError(f"Consumo/unidade inconsistente em {brand} {model} {version}, ciclo {year}: {exc}") from exc
         record = {
             "sourceYear": year, "sourceCycle": cycle, "sourceReferenceDate": reference_date,
             "sourceDocument": document_url, "category": category or None, "brand": brand, "model": model,
-            "version": version or None, "engine": text(row[4]) or None,
-            "propulsionType": propulsion, "transmission": text(row[6]) or None,
-            "airConditioning": text(row[7]) or None, "steering": text(row[8]) or None,
+            "version": version or None, "engine": text(row[profile.get("engine", 4)]) if profile.get("engine", 4) is not None and text(row[profile.get("engine", 4)]) else None,
+            "propulsionType": propulsion, "transmission": text(row[profile["transmission"]]) or None if profile.get("transmission") is not None else None,
+            "airConditioning": text(row[profile["air_conditioning"]]) or None if profile.get("air_conditioning") is not None else None,
+            "steering": text(row[profile["steering"]]) or None if profile.get("steering") is not None else None,
             "officialFuelCode": official_fuel_code or None, "fuels": fuels,
             "energyConsumptionMJPerKm": parse_number(row[profile["energy"]], upper=20) if profile["energy"] is not None else None,
             "electricRangeKm": parse_number(row[profile["range"]], upper=3000) if profile["range"] is not None else None,
@@ -308,6 +356,18 @@ def update(destination: Path = DIST, fetcher=fetch, generated_at: str | None = N
             if path and (destination / path).exists(): previous_files[path] = (destination / path).read_bytes()
     cycles = []
     for item in discovered:
+        old_item = old_vehicle.get("cycles", {}).get(str(item["sourceYear"]), {})
+        old_dataset = old_item.get("dataset", {})
+        cached_path = old_dataset.get("path")
+        cached_body = previous_files.get(cached_path) if cached_path else None
+        if (item["sourceYear"] < 2021 and old_item.get("documentUrl") == item["documentUrl"]
+                and old_item.get("sourceReferenceDate") == item.get("sourceReferenceDate") and cached_body
+                and hashlib.sha256(cached_body).hexdigest() == old_dataset.get("sha256")):
+            cached_records = json.loads(cached_body.decode("utf-8")).get("records", [])
+            if len(cached_records) >= 30:
+                item = {**item, "sourceSha256": old_item.get("sha256"), "records": cached_records}
+                cycles.append(item)
+                continue
         raw = fetcher(item["documentUrl"])
         item = {**item, "sourceSha256": hashlib.sha256(raw).hexdigest(), "records": parse_pdf(raw, item)}
         cycles.append(item)
