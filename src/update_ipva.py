@@ -9,6 +9,7 @@ import re
 import socket
 import time
 import unicodedata
+import pymupdf
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -47,7 +48,7 @@ COVERAGE_2026 = {
     "MS": {"status": "PARTIAL", "rule": "Veículos usados: 3% passeio comum; 4,5% passeio diesel; GNV tem redução", "source": "https://www.sefaz.ms.gov.br/ipva/", "base": "FIPE contratada pelo Estado para valor venal", "baseSource": "https://www.sefaz.ms.gov.br/ipva/", "blocker": "Reduções GNV/frotista e separação novo/usado precisam de dados que a seleção atual não fornece."},
     "MG": {"status": "AUTO", "rule": "4% geral; combustível exclusivamente álcool tem redução de 30% da base", "source": "https://www.fazenda.mg.gov.br/empresas/legislacao_tributaria/ipva/duvidas_frequentes/", "base": "Tabela estadual 2026; fallback FIPE compatível", "baseSource": "https://diarioeletronico.fazenda.mg.gov.br/opendiariogeral/resultados-ipva/index.html", "blocker": "A tabela estadual não está integrada ao app; estimativas usam FIPE compatível."},
     "PA": {"status": "PARTIAL", "rule": "2,5% para automóveis e caminhonetes", "source": "https://site-sefa-wordpress.sefa.pa.gov.br/wp-content/uploads/legislacao/leis_estaduais/lp1996_06017.pdf", "base": "Tabela estadual 2026 publicada por modelo ainda não confirmada", "baseSource": "https://site-sefa-wordpress.sefa.pa.gov.br/", "blocker": "Regra legal encontrada, mas tabela do exercício 2026 e exceções não foram confirmadas."},
-    "PB": {"status": "AUTO", "rule": "2,5% para automóveis", "source": "https://www.sefaz.pb.gov.br/legislacao/65-leis/ipva/5032-lei-n-11-007-de-06-de-novembro-de-2017", "base": "Relatório oficial de valores do IPVA 2026 por marca/modelo/ano; FIPE compatível é fallback estimado", "baseSource": "https://www.sefaz.pb.gov.br/legislacao/382-portarias/portarias-2025/17092-portaria-n-00218-2025-sefaz", "blocker": "A base por modelo existe, mas ainda não tem resolução confiável no app; resultado usa FIPE estimada."},
+    "PB": {"status": "AUTO", "rule": "2,5% para automóveis", "source": "https://auniao.pb.gov.br/servicos/doe/2017/novembro/diario-oficial-07-11-2017.pdf", "base": "Relatório oficial de valores do IPVA 2026 por marca/modelo/ano; FIPE compatível é fallback estimado", "baseSource": "https://www.sefaz.pb.gov.br/legislacao/382-portarias/portarias-2025/17092-portaria-n-00218-2025-sefaz", "blocker": "A base por modelo existe, mas ainda não tem resolução confiável no app; resultado usa FIPE estimada."},
     "PR": {"status": "AUTO", "rule": "1,9% geral para automóveis; 1% GNV", "source": "https://www.fazenda.pr.gov.br/Pagina/Calcule-agora-seu-IPVA-2026", "base": "Referência FIPE compatível; valor estadual não integrado", "baseSource": "https://www.fazenda.pr.gov.br/Noticia/Com-reducao-de-45-Parana-tera-menor-aliquota-de-IPVA-do-Brasil-em-2026", "blocker": "Base oficial exata não está integrada; GNV é regra separada."},
     "PE": {"status": "PARTIAL", "rule": "2,4% geral; GNV até R$ 100 mil 1,5%; elétrico isento; 20 anos ou mais sem incidência", "source": "https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/Leis_Tributarias/2023/Lei18305_2023.htm", "base": "Tabela estadual 2026 com base, alíquota e valor por modelo", "baseSource": "https://www.sefaz.pe.gov.br/Servicos/IPVA/Valores%20de%20IPVA/Tabela%20IPVA%202026.pdf", "blocker": "A regra especial depende do combustível, valor, comprovação de adaptação e ano; exige condições ainda ausentes."},
     "PI": {"status": "MANUAL_ONLY", "rule": "Lei localizada indica 2,5% para automóveis, mas consolidação vigente em 2026 não confirmada", "source": "https://www.sefaz.pi.gov.br/arquivos/legislacao/leis/Lei4548.pdf", "base": "Tabela oficial 2026 não confirmada", "baseSource": "https://www.sefaz.pi.gov.br/", "blocker": "Fonte normativa consultada está consolidada somente até 2011; não automatizar sem validar alterações posteriores e base 2026."},
@@ -136,7 +137,7 @@ RULES = {
     },
     "PB": {
         "sourceName": "SEFAZ/PB — Lei nº 11.007/2017 e regras IPVA 2026",
-        "sourceUrl": "https://www.sefaz.pb.gov.br/legislacao/65-leis/ipva/5032-lei-n-11-007-de-06-de-novembro-de-2017",
+        "sourceUrl": "https://auniao.pb.gov.br/servicos/doe/2017/novembro/diario-oficial-07-11-2017.pdf",
         "baseSourceName": "SEFAZ/PB — Portaria nº 218/2025, valores IPVA 2026",
         "baseSourceUrl": "https://www.sefaz.pb.gov.br/legislacao/382-portarias/portarias-2025/17092-portaria-n-00218-2025-sefaz",
         "markers": ["2,5%"], "baseMarkers": [],
@@ -283,6 +284,9 @@ def fetch_source(url: str, timeout: int = 25) -> str:
             if attempt == 1 or not isinstance(reason, (TimeoutError, socket.timeout, ConnectionError, OSError)):
                 raise
             time.sleep(1)
+    if raw.startswith(b"%PDF-"):
+        with pymupdf.open(stream=raw, filetype="pdf") as document:
+            return " ".join(page.get_text() for page in document)
     parser = TextExtractor()
     parser.feed(raw.decode(encoding, errors="replace"))
     return " ".join(parser.parts)

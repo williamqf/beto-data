@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 from urllib.error import URLError
+import pymupdf
 
 from src import update_ipva
 
@@ -64,29 +65,38 @@ class IpvaPipelineTests(unittest.TestCase):
     def test_fetch_source_retries_one_transient_timeout(self):
         class Response:
             status = 200
+            headers = type("Headers", (), {"get_content_charset": staticmethod(lambda: "utf-8")})()
 
-            def __enter__(self):
-                return self
+            def __init__(self, body):
+                self.body = body
 
-            def __exit__(self, *_args):
-                return False
+            def __enter__(self): return self
+            def __exit__(self, *_args): return False
+            def read(self): return self.body
 
-            @property
-            def headers(self):
-                class Headers:
-                    @staticmethod
-                    def get_content_charset():
-                        return "utf-8"
-                return Headers()
-
-            @staticmethod
-            def read():
-                return b"<p>fonte oficial</p>"
-
-        with patch("src.update_ipva.urlopen", side_effect=[URLError(socket.timeout("transient")), Response()]) as open_url:
+        with patch("src.update_ipva.urlopen", side_effect=[URLError(socket.timeout("transient")), Response(b"<p>fonte oficial</p>")]) as open_url:
             with patch("src.update_ipva.time.sleep"):
                 self.assertEqual("fonte oficial", update_ipva.fetch_source("https://example.gov.br", timeout=1))
         self.assertEqual(2, open_url.call_count)
+
+    def test_fetch_source_extracts_text_from_official_pdf(self):
+        document = pymupdf.open()
+        page = document.new_page()
+        page.insert_text((72, 72), "Lei 11.007 IPVA 2,5%")
+        body = document.tobytes()
+        document.close()
+
+        response = type("Response", (), {
+            "status": 200,
+            "headers": type("Headers", (), {"get_content_charset": staticmethod(lambda: "utf-8")})(),
+            "__enter__": lambda self: self,
+            "__exit__": lambda self, *_args: False,
+            "read": lambda self: body,
+        })()
+        with patch("src.update_ipva.urlopen", return_value=response):
+            text = update_ipva.fetch_source("https://example.gov.br/law.pdf")
+        self.assertIn("Lei 11.007", text)
+        self.assertIn("2,5%", text)
 
     def test_unsupported_ufs_are_explicitly_manual_or_partial_instead_of_receiving_fake_rules(self):
         built = update_ipva.build_files({}, {}, self.now)
