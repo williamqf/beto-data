@@ -151,6 +151,30 @@ class PipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Checksum INMETRO"):
                 anp.preserve_vehicle_efficiency({"manifest.json": b"{}"}, previous)
 
+    def test_anp_preserves_ipva_rule_manifest_and_checksum_validated_assets(self):
+        with tempfile.TemporaryDirectory() as td:
+            previous = Path(td)
+            path = "datasets/taxes/ipva/2026/MG.json"
+            body = b'{"uf":"MG","year":2026}'
+            (previous / path).parent.mkdir(parents=True); (previous / path).write_bytes(body)
+            branch = {"schemaVersion": 1, "datasetVersion": "fixture", "years": {"2026": {"MG": {
+                "path": path, "sha256": hashlib.sha256(body).hexdigest(), "recordCount": 1}}}}
+            (previous / "manifest.json").write_text(json.dumps({"ipva": branch}), encoding="utf-8")
+            output = {"manifest.json": json.dumps({"schemaVersion": 1, "datasets": {"BR": {}}}).encode()}
+            merged = anp.preserve_auxiliary_branches(output, previous)
+            self.assertEqual(body, merged[path])
+            self.assertEqual(branch, json.loads(merged["manifest.json"])["ipva"])
+
+    def test_anp_refuses_to_preserve_ipva_asset_with_bad_checksum(self):
+        with tempfile.TemporaryDirectory() as td:
+            previous = Path(td)
+            path = "datasets/taxes/ipva/2026/PR.json"
+            (previous / path).parent.mkdir(parents=True); (previous / path).write_bytes(b"bad")
+            branch = {"years": {"2026": {"PR": {"path": path, "sha256": "0" * 64}}}}
+            (previous / "manifest.json").write_text(json.dumps({"ipva": branch}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Checksum IPVA"):
+                anp.preserve_auxiliary_branches({"manifest.json": b"{}"}, previous)
+
 
 if __name__ == "__main__":
     unittest.main()

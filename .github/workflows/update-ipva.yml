@@ -1,0 +1,64 @@
+name: Beto Data — IPVA
+
+on:
+  schedule:
+    # Weekly during the IPVA update season (Nov–Feb).
+    - cron: '0 12 * 11,12,1,2 1'
+    # Monthly outside the season (Mar–Oct).
+    - cron: '0 12 1 3-10 *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-ipva.yml'
+      - 'src/update_ipva.py'
+      - 'tests/test_update_ipva.py'
+      - 'dist/datasets/taxes/ipva/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: beto-data-pages
+  cancel-in-progress: false
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Testar os pipelines offline
+        run: python -m unittest discover -s tests -v
+      - name: Descobrir e validar regras oficiais antes de gerar a publicação
+        id: update
+        shell: bash
+        run: |
+          if curl --silent --show-error --fail https://williamqf.github.io/beto-data/manifest.json -o /dev/null; then
+            RESULT=$(python src/update_ipva.py --previous-base-url https://williamqf.github.io/beto-data)
+          else
+            RESULT=$(python src/update_ipva.py)
+          fi
+          echo "$RESULT"
+          echo "$RESULT" | python -c 'import json,sys; print("changed=" + str(json.load(sys.stdin)["changed"]).lower())' >> "$GITHUB_OUTPUT"
+      - name: Configurar GitHub Pages
+        if: steps.update.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+      - name: Preparar artefato público
+        if: steps.update.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Publicar o conjunto integrado do Beto Data
+        if: steps.update.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4

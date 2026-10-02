@@ -26,14 +26,32 @@ O código original do pipeline neste repositório é licenciado sob GNU GPL vers
 
 O app baixa o manifesto e somente os arquivos JSON versionados necessários. Cidade, placa, localização precisa, preferências, identificadores e logs dos motoristas não são enviados nem armazenados aqui. O nome da cidade escolhido no app permanece local; a UF seleciona o arquivo regional.
 
-Diesel e GLP podem existir no dataset da ANP, mas a UI atual do app oferece apenas combustíveis que ela suporta. Consulta por placa e IPVA não fazem parte desta fase.
+Diesel e GLP podem existir no dataset da ANP, mas a UI atual do app oferece apenas combustíveis que ela suporta. Consulta por placa não faz parte do escopo deste repositório.
+
+### IPVA estadual (Fase 2B)
+
+As regras de IPVA consumidas pelo Android ficam neste repositório; não há alíquotas por UF/exercício embutidas no app. O primeiro recorte contempla MG, SP e PR para o exercício 2026, com categoria e combustível explicitamente suportados. Tipos de veículo, propulsões e exceções não cobertos ficam para preenchimento manual no app.
+
+O pipeline valida as páginas oficiais antes de montar a publicação. MG usa a [SEF/MG — legislação e dúvidas frequentes](https://www.fazenda.mg.gov.br/empresas/legislacao_tributaria/ipva/duvidas_frequentes/) e o índice oficial das [tabelas de base do exercício](https://diarioeletronico.fazenda.mg.gov.br/opendiariogeral/resultados-ipva/index.html). SP usa a [Lei estadual 13.296/2008 compilada](https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html) e a página da [SEFAZ/SP sobre IPVA e valores venais](https://portal.fazenda.sp.gov.br/servicos/ipva/Paginas/perguntas-frequentes.aspx). PR usa as publicações oficiais sobre [alíquotas de 2026](https://www.fazenda.pr.gov.br/Noticia/Com-aliquota-de-19-e-desconto-vista-Fazenda-divulga-datas-do-IPVA-2026) e [valor venal de mercado](https://www.fazenda.pr.gov.br/Noticia/Com-reducao-de-45-Parana-tera-menor-aliquota-de-IPVA-do-Brasil-em-2026).
+
+Os datasets distinguem a regra legal da base. Nesta versão ainda não há tabela estadual normalizada com correspondência confiável por veículo; por isso o app usa FIPE compatível como base estimada, com sua origem e qualidade identificadas, ou exige valor manual quando não há correspondência segura. Não classifica FIPE como base oficial exata. A redução legal de 30% da base em MG só é aplicada ao combustível exclusivamente álcool, conforme a fonte estadual. No PR a regra especial de GNV é separada da alíquota geral de automóveis. Outras exceções só entram depois de validação oficial explícita.
+
+O manifesto público integrado é [`https://williamqf.github.io/beto-data/manifest.json`](https://williamqf.github.io/beto-data/manifest.json). A ramificação IPVA lista os arquivos anuais. Para 2026, os caminhos esperados são:
+
+- [`datasets/taxes/ipva/2026/MG.json`](https://williamqf.github.io/beto-data/datasets/taxes/ipva/2026/MG.json)
+- [`datasets/taxes/ipva/2026/SP.json`](https://williamqf.github.io/beto-data/datasets/taxes/ipva/2026/SP.json)
+- [`datasets/taxes/ipva/2026/PR.json`](https://williamqf.github.io/beto-data/datasets/taxes/ipva/2026/PR.json)
+
+Esses links ficam ativos depois que o repositório público e o GitHub Pages recebem esta versão. O Android baixa o manifesto e o dataset da UF, valida schema, exercício, versão, checksum e origem, e mantém cópia válida local para uso offline. Se não houver dados remotos nem cache, o fluxo continua com entrada manual.
 
 ## Estrutura
 
 ```text
 .github/workflows/update-anp.yml  # valida ANP + PBE e publica a distribuição
+.github/workflows/update-ipva.yml # valida regras fiscais e publica IPVA sazonalmente
 src/update_anp.py                 # pipeline ANP
 src/update_inmetro.py             # descoberta/PDF/validação do PBE Veicular
+src/update_ipva.py                # valida fontes oficiais e gera regras estaduais
 tests/                             # fixtures pequenas e testes offline
 requirements.txt                   # dependências do pipeline
 dist/manifest.json                 # manifesto público consumido pelo Android
@@ -77,6 +95,7 @@ python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python src/update_anp.py
 python src/update_inmetro.py
+python src/update_ipva.py
 ```
 
 Os testes usam workbooks e registros sintéticos pequenos, sem depender de rede. O parser também é validado localmente contra os PDFs oficiais baixados durante o desenvolvimento; eles não são fixtures nem são publicados no Pages. O diretório `dist/` contém a cópia versionada que inicializa a primeira publicação e permite validar os hashes.

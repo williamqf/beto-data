@@ -143,6 +143,29 @@
     }
   },
   "generatedAt": "2026-09-29T21:04:56+00:00",
+  "ipva": {
+    "datasetVersion": "907a7d7c29cd8d54",
+    "schemaVersion": 1,
+    "years": {
+      "2026": {
+        "MG": {
+          "path": "datasets/taxes/ipva/2026/MG.json",
+          "recordCount": 2,
+          "sha256": "77f6e611d249ff5f8ecd5e242dd0e34d06c0bb2ef034f7e54ef4fb5c8de68c13"
+        },
+        "PR": {
+          "path": "datasets/taxes/ipva/2026/PR.json",
+          "recordCount": 2,
+          "sha256": "0135c4499b44bf42a87a84b972526dce7c21448a58e944e4c0d8f299fe5dd1e0"
+        },
+        "SP": {
+          "path": "datasets/taxes/ipva/2026/SP.json",
+          "recordCount": 1,
+          "sha256": "610416ea670c54a364f5daa0d4603d73c977f8ab3d2a9debff0a60ca61cfb542"
+        }
+      }
+    }
+  },
   "referenceEnd": "2026-09-26",
   "referenceStart": "2026-09-20",
   "schemaVersion": 1,
