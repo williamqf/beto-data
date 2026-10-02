@@ -54,6 +54,10 @@ class IpvaPipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Fonte MG mudou"):
             update_ipva.validate_sources(lambda url: responses[url])
 
+    def test_source_connection_failures_name_the_state_and_url(self):
+        with self.assertRaisesRegex(RuntimeError, r"Fonte oficial de AC indisponível.*sefaz\.ac\.gov\.br"):
+            update_ipva.validate_sources(lambda url: (_ for _ in ()).throw(TimeoutError("fixture timeout")))
+
     def test_unsupported_ufs_are_explicitly_manual_or_partial_instead_of_receiving_fake_rules(self):
         built = update_ipva.build_files({}, {}, self.now)
         manifest = json.loads(built["manifest.json"])

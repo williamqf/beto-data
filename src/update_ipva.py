@@ -279,12 +279,20 @@ def fetch_source(url: str, timeout: int = 25) -> str:
 
 def validate_sources(fetcher=fetch_source) -> None:
     for uf, config in RULES.items():
-        text = normalized(fetcher(config["sourceUrl"]))
+        print(f"Validando fonte oficial do IPVA {uf}: {config['sourceUrl']}", flush=True)
+        try:
+            text = normalized(fetcher(config["sourceUrl"]))
+        except Exception as error:
+            raise RuntimeError(f"Fonte oficial de {uf} indisponível em {config['sourceUrl']}: {error}") from error
         for marker in config["markers"]:
             if normalized(marker) not in text:
                 raise ValueError(f"Fonte {uf} mudou ou não confirma o marcador esperado: {marker}")
         if config.get("baseMarkers"):
-            base_text = normalized(fetcher(config["baseSourceUrl"]))
+            print(f"Validando base oficial do IPVA {uf}: {config['baseSourceUrl']}", flush=True)
+            try:
+                base_text = normalized(fetcher(config["baseSourceUrl"]))
+            except Exception as error:
+                raise RuntimeError(f"Fonte da base oficial de {uf} indisponível em {config['baseSourceUrl']}: {error}") from error
             for marker in config["baseMarkers"]:
                 if normalized(marker) not in base_text:
                     raise ValueError(f"Fonte de base {uf} mudou ou não confirma o marcador esperado: {marker}")
