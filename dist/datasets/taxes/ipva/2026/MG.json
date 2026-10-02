@@ -1,8 +1,8 @@
 {
   "baseSourceName": "SEF/MG — Resolução 5.977/2025 e tabelas de base do IPVA 2026",
   "baseSourceUrl": "https://diarioeletronico.fazenda.mg.gov.br/opendiariogeral/resultados-ipva/index.html",
-  "datasetVersion": "cfa2ed620c45da2d",
-  "publishedAt": "2026-10-02T19:09:17+00:00",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
   "rules": [
     {
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
@@ -71,6 +71,6 @@
   "sourceName": "SEF/MG — dúvidas frequentes e legislação do IPVA",
   "sourceUrl": "https://www.fazenda.mg.gov.br/empresas/legislacao_tributaria/ipva/duvidas_frequentes/",
   "uf": "MG",
-  "verifiedAt": "2026-10-02T19:09:17+00:00",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
   "year": 2026
 }

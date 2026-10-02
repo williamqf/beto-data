@@ -1,0 +1,39 @@
+{
+  "baseSourceName": "SEFAZ/AC — Portaria nº 751/2025, base IPVA 2026",
+  "baseSourceUrl": "https://sefaz.ac.gov.br/2021/?p=23209",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
+  "rules": [
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "PICKUP",
+              "MIXED"
+            ]
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 2.0
+        }
+      ],
+      "id": "ac-passenger-standard",
+      "notes": "Automóveis de passeio, utilitários, camionetas de uso misto e caminhonetes abrangidos pela regra; base FIPE resulta em estimativa.",
+      "priority": 10
+    }
+  ],
+  "schemaVersion": 2,
+  "sourceName": "SEFAZ/AC — LC nº 483/2024 e regras IPVA 2026",
+  "sourceUrl": "https://sefaz.ac.gov.br/2021/?p=21413",
+  "uf": "AC",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
+  "year": 2026
+}

@@ -1,0 +1,38 @@
+{
+  "baseSourceName": "SEFAZ/ES — base de cálculo do IPVA",
+  "baseSourceUrl": "https://sefaz.es.gov.br/base-de-calculo",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
+  "rules": [
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "UTILITY"
+            ]
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 2.0
+        }
+      ],
+      "id": "es-passenger-standard",
+      "notes": "Alíquota geral de carros de passeio e utilitários em 2026; FIPE é uma base estimada.",
+      "priority": 10
+    }
+  ],
+  "schemaVersion": 2,
+  "sourceName": "SEFAZ/ES — IPVA 2026",
+  "sourceUrl": "https://sefaz.es.gov.br/informacoes-ipva",
+  "uf": "ES",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
+  "year": 2026
+}

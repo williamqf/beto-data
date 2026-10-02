@@ -1,0 +1,38 @@
+{
+  "baseSourceName": "SEF/SC — bases anuais do IPVA",
+  "baseSourceUrl": "https://www.sef.sc.gov.br/saiba-mais/ipva-imposto-sobre-veiculos-automotores",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
+  "rules": [
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "UTILITY"
+            ]
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 2.0
+        }
+      ],
+      "id": "sc-passenger-standard",
+      "notes": "Veículo terrestre de passeio/utilitário; FIPE compatível continua estimativa da base estadual.",
+      "priority": 10
+    }
+  ],
+  "schemaVersion": 2,
+  "sourceName": "SEF/SC — legislação do IPVA",
+  "sourceUrl": "https://legislacao.sef.sc.gov.br/html/atos_diat/2025/atodiat_25_099.htm",
+  "uf": "SC",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
+  "year": 2026
+}

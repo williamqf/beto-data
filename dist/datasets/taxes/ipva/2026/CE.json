@@ -1,0 +1,142 @@
+{
+  "baseSourceName": "SEFAZ/CE — valores venais IPVA 2026",
+  "baseSourceUrl": "https://ipva.sefaz.ce.gov.br/",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
+  "rules": [
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "PICKUP",
+              "UTILITY"
+            ]
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "ETHANOL",
+              "DIESEL",
+              "GNV"
+            ]
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "LTE",
+            "value": 98.632
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 2.5
+        }
+      ],
+      "id": "ce-passenger-up-to-100cv",
+      "notes": "Até 100 cv. Valor FIPE compatível é base estimada.",
+      "priority": 20
+    },
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "PICKUP",
+              "UTILITY"
+            ]
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "ETHANOL",
+              "DIESEL",
+              "GNV"
+            ]
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "GT",
+            "value": 98.632
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "LTE",
+            "value": 177.5376
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 3.0
+        }
+      ],
+      "id": "ce-passenger-100-to-180cv",
+      "notes": "Acima de 100 cv até 180 cv. Valor FIPE compatível é base estimada.",
+      "priority": 20
+    },
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "IN",
+            "value": [
+              "PASSENGER_CAR",
+              "PICKUP",
+              "UTILITY"
+            ]
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "ETHANOL",
+              "DIESEL",
+              "GNV"
+            ]
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "GT",
+            "value": 177.5376
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 3.5
+        }
+      ],
+      "id": "ce-passenger-over-180cv",
+      "notes": "Acima de 180 cv. Valor FIPE compatível é base estimada.",
+      "priority": 20
+    }
+  ],
+  "schemaVersion": 2,
+  "sourceName": "SEFAZ/CE — IPVA 2026, alíquotas previstas na Lei nº 12.023/1992",
+  "sourceUrl": "https://www2.al.ce.gov.br/legislativo/legislacao5/leis92/12023.htm",
+  "uf": "CE",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
+  "year": 2026
+}

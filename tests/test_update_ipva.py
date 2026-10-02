@@ -15,13 +15,16 @@ class IpvaPipelineTests(unittest.TestCase):
         files = {"datasets/fuel/old/BR.json": b"old fuel"}
         built = update_ipva.build_files(previous, files, self.now)
         manifest = json.loads(built["manifest.json"])
-        self.assertEqual({"MG", "SP", "PR"}, set(manifest["ipva"]["years"]["2026"]))
+        self.assertEqual({"MG", "SP", "PR", "AC", "CE", "ES", "GO", "MT", "PB", "SC"}, set(manifest["ipva"]["years"]["2026"]))
         self.assertEqual(update_ipva.UF_CODES, set(manifest["ipva"]["coverage"]))
-        self.assertEqual(3, sum(row["status"] == "SUPPORTED_ESTIMATED_BASE" for row in manifest["ipva"]["coverage"].values()))
-        self.assertEqual(18, sum(row["status"] == "PARTIAL" for row in manifest["ipva"]["coverage"].values()))
+        self.assertEqual(7, sum(row["status"] == "AUTO" for row in manifest["ipva"]["coverage"].values()))
+        self.assertEqual(3, sum(row["status"] == "AUTO_WITH_USER_INPUT" for row in manifest["ipva"]["coverage"].values()))
+        self.assertEqual(11, sum(row["status"] == "PARTIAL" for row in manifest["ipva"]["coverage"].values()))
         self.assertEqual(6, sum(row["status"] == "MANUAL_ONLY" for row in manifest["ipva"]["coverage"].values()))
         self.assertEqual("pbe-x", manifest["vehicleEfficiency"]["datasetVersion"])
         self.assertEqual("fuel-x", manifest["datasetVersion"])
+        self.assertEqual("national-passenger-vehicle-20-years-immunity", manifest["ipva"]["commonRules"][0]["id"])
+        self.assertEqual("EXEMPT", manifest["ipva"]["commonRules"][0]["effects"][0]["type"])
         for uf, entry in manifest["ipva"]["years"]["2026"].items():
             body = built[entry["path"]]
             self.assertEqual(entry["sha256"], hashlib.sha256(body).hexdigest())
@@ -34,6 +37,9 @@ class IpvaPipelineTests(unittest.TestCase):
                 self.assertEqual(["GASOLINE", "FLEX", "DIESEL"], dataset["rules"][0]["conditions"]["all"][1]["value"])
                 self.assertEqual(["ETHANOL", "GNV", "ELECTRIC"], dataset["rules"][1]["conditions"]["all"][1]["value"])
                 self.assertEqual(2, manifest["ipva"]["schemaVersion"])
+            if uf == "PR":
+                gnv = next(rule for rule in dataset["rules"] if rule["id"] == "pr-passenger-gnv")
+                self.assertIn({"field": "gnvRegularized", "operator": "EQUALS", "value": "YES"}, gnv["conditions"]["all"])
 
     def test_validation_blocks_changed_official_source_markers(self):
         config = update_ipva.RULES
@@ -52,9 +58,9 @@ class IpvaPipelineTests(unittest.TestCase):
         built = update_ipva.build_files({}, {}, self.now)
         manifest = json.loads(built["manifest.json"])
         self.assertNotIn("RJ", manifest["ipva"]["years"]["2026"])
-        self.assertNotIn("SC", manifest["ipva"]["years"]["2026"])
+        self.assertIn("SC", manifest["ipva"]["years"]["2026"])
         self.assertEqual("MANUAL_ONLY", manifest["ipva"]["coverage"]["RJ"]["status"])
-        self.assertEqual("PARTIAL", manifest["ipva"]["coverage"]["SC"]["status"])
+        self.assertEqual("AUTO", manifest["ipva"]["coverage"]["SC"]["status"])
 
     def test_coverage_sources_must_be_official_https(self):
         self.assertEqual(update_ipva.UF_CODES, set(update_ipva.COVERAGE_2026))
@@ -78,6 +84,13 @@ class IpvaPipelineTests(unittest.TestCase):
         for rule in invalid_rules:
             with self.assertRaises(ValueError):
                 update_ipva.validate_v2_rule(rule)
+
+    def test_shared_national_rule_uses_official_constitution_source_and_vehicle_category_guard(self):
+        rule = update_ipva.COMMON_RULES[0]
+        self.assertIn("planalto.gov.br", rule["sourceUrl"])
+        self.assertIn({"field": "vehicleAge", "operator": "GTE", "value": 20}, rule["conditions"]["all"])
+        self.assertIn("vehicleCategory", {condition["field"] for condition in rule["conditions"]["all"]})
+        update_ipva.validate_v2_rule(rule, "NATIONAL")
 
 
 if __name__ == "__main__":

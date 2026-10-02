@@ -1,0 +1,66 @@
+{
+  "baseSourceName": "Secretaria da Economia/GO — valores venais IPVA 2026",
+  "baseSourceUrl": "https://goias.gov.br/economia/calendario-de-vencimentos/",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
+  "rules": [
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "LTE",
+            "value": 100
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 3.0
+        }
+      ],
+      "id": "go-passenger-up-to-100hp",
+      "notes": "Automóveis de passeio até 100 HP; potência ausente é perguntada ao usuário. FIPE é uma base estimada.",
+      "priority": 20
+    },
+    {
+      "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
+      "conditions": {
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "enginePowerHp",
+            "operator": "GT",
+            "value": 100
+          }
+        ]
+      },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 3.75
+        }
+      ],
+      "id": "go-passenger-over-100hp",
+      "notes": "Automóveis de passeio acima de 100 HP; potência ausente é perguntada ao usuário. FIPE é uma base estimada.",
+      "priority": 20
+    }
+  ],
+  "schemaVersion": 2,
+  "sourceName": "Secretaria da Economia/GO — Código Tributário e FAQ do IPVA",
+  "sourceUrl": "https://goias.gov.br/economia/perguntas-e-respostas-6/",
+  "uf": "GO",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
+  "year": 2026
+}

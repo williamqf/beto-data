@@ -1,8 +1,8 @@
 {
   "baseSourceName": "SEFA/PR — valor venal de mercado do veículo",
   "baseSourceUrl": "https://www.fazenda.pr.gov.br/Noticia/Com-reducao-de-45-Parana-tera-menor-aliquota-de-IPVA-do-Brasil-em-2026",
-  "datasetVersion": "cfa2ed620c45da2d",
-  "publishedAt": "2026-10-02T19:09:17+00:00",
+  "datasetVersion": "a4b0c0b6d3175852",
+  "publishedAt": "2026-10-02T19:56:38+00:00",
   "rules": [
     {
       "baseType": "STATE_MARKET_REFERENCE_WITH_FIPE_FALLBACK",
@@ -19,6 +19,11 @@
             "value": [
               "GNV"
             ]
+          },
+          {
+            "field": "gnvRegularized",
+            "operator": "EQUALS",
+            "value": "YES"
           }
         ]
       },
@@ -29,7 +34,7 @@
         }
       ],
       "id": "pr-passenger-gnv",
-      "notes": "Veículo movido a GNV: alíquota especial de 1%.",
+      "notes": "Alíquota especial de 1% somente quando o complemento de categoria/combustível estiver registrado no DETRAN/PR; declaração do usuário é pedida quando necessária.",
       "priority": 100
     },
     {
@@ -68,6 +73,6 @@
   "sourceName": "SEFA/PR — regras e alíquotas IPVA 2026",
   "sourceUrl": "https://www.fazenda.pr.gov.br/Pagina/Calcule-agora-seu-IPVA-2026",
   "uf": "PR",
-  "verifiedAt": "2026-10-02T19:09:17+00:00",
+  "verifiedAt": "2026-10-02T19:56:38+00:00",
   "year": 2026
 }

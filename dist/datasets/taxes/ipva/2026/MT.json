@@ -1,6 +1,6 @@
 {
-  "baseSourceName": "SEFAZ/SP — tabela anual de valores venais do exercício",
-  "baseSourceUrl": "https://portal.fazenda.sp.gov.br/servicos/ipva/Paginas/perguntas-frequentes.aspx",
+  "baseSourceName": "SEFAZ/MT — tabela de valores venais IPVA 2026",
+  "baseSourceUrl": "https://www5.sefaz.mt.gov.br/servicos?c=75032612&e=75032935",
   "datasetVersion": "a4b0c0b6d3175852",
   "publishedAt": "2026-10-02T19:56:38+00:00",
   "rules": [
@@ -19,20 +19,27 @@
             "value": [
               "GASOLINE",
               "FLEX",
-              "DIESEL"
+              "ETHANOL",
+              "DIESEL",
+              "GNV"
             ]
+          },
+          {
+            "field": "engineDisplacementCc",
+            "operator": "LTE",
+            "value": 1000
           }
         ]
       },
       "effects": [
         {
           "type": "RATE",
-          "value": 4.0
+          "value": 2.0
         }
       ],
-      "id": "sp-passenger-standard",
-      "notes": "Regra geral para automóvel não abrangido por alíquota especial ou isenção.",
-      "priority": 10
+      "id": "mt-passenger-up-to-1000cc",
+      "notes": "Automóvel de passeio até 1.000 cm³; cilindrada ausente é perguntada ao usuário. FIPE é uma base estimada.",
+      "priority": 20
     },
     {
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
@@ -47,10 +54,17 @@
             "field": "fuelType",
             "operator": "IN",
             "value": [
+              "GASOLINE",
+              "FLEX",
               "ETHANOL",
-              "GNV",
-              "ELECTRIC"
+              "DIESEL",
+              "GNV"
             ]
+          },
+          {
+            "field": "engineDisplacementCc",
+            "operator": "GT",
+            "value": 1000
           }
         ]
       },
@@ -60,15 +74,15 @@
           "value": 3.0
         }
       ],
-      "id": "sp-passenger-exclusive-fuel",
-      "notes": "Alíquota legal reduzida para motor exclusivamente movido a álcool, GNV ou eletricidade.",
-      "priority": 10
+      "id": "mt-passenger-over-1000cc",
+      "notes": "Automóvel de passeio acima de 1.000 cm³; cilindrada ausente é perguntada ao usuário. FIPE é uma base estimada.",
+      "priority": 20
     }
   ],
   "schemaVersion": 2,
-  "sourceName": "ALESP — Lei 13.296/2008, texto compilado",
-  "sourceUrl": "https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html",
-  "uf": "SP",
+  "sourceName": "SEFAZ/MT — alíquotas do IPVA",
+  "sourceUrl": "https://www5.sefaz.mt.gov.br/documents/6071037/10218152/AL%C3%8DQUOTAS%2BIPVA.pdf/f1a8491d-484b-5876-2d54-382813d76121",
+  "uf": "MT",
   "verifiedAt": "2026-10-02T19:56:38+00:00",
   "year": 2026
 }
