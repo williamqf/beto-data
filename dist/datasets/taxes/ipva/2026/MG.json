@@ -1,41 +1,76 @@
 {
   "baseSourceName": "SEF/MG — Resolução 5.977/2025 e tabelas de base do IPVA 2026",
   "baseSourceUrl": "https://diarioeletronico.fazenda.mg.gov.br/opendiariogeral/resultados-ipva/index.html",
-  "datasetVersion": "43d49b1fc576f43b",
-  "publishedAt": "2026-10-02T16:12:57+00:00",
+  "datasetVersion": "cfa2ed620c45da2d",
+  "publishedAt": "2026-10-02T19:09:17+00:00",
   "rules": [
     {
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "GASOLINE",
-          "FLEX",
-          "DIESEL"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "DIESEL"
+            ]
+          }
         ]
       },
-      "notes": "Automóvel de passeio. Combustível exclusivamente álcool possui redução legal de 30% na base; categorias e propulsões especiais exigem análise separada.",
-      "rate": 4.0,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 4.0
+        }
+      ],
+      "id": "mg-passenger-standard",
+      "notes": "Automóvel de passeio. Categorias e propulsões especiais exigem análise separada.",
+      "priority": 10
     },
     {
-      "baseMultiplier": 0.7,
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "ETHANOL"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "ETHANOL"
+            ]
+          }
         ]
       },
-      "notes": "Veículo exclusivamente movido a álcool: redução de 30% da base de cálculo, conforme regra oficial.",
-      "rate": 4.0,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "effects": [
+        {
+          "type": "BASE_REDUCTION",
+          "value": 0.3
+        },
+        {
+          "type": "RATE",
+          "value": 4.0
+        }
+      ],
+      "id": "mg-passenger-exclusive-ethanol",
+      "notes": "Veículo exclusivamente movido a álcool: redução legal de 30% da base de cálculo.",
+      "priority": 10
     }
   ],
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceName": "SEF/MG — dúvidas frequentes e legislação do IPVA",
   "sourceUrl": "https://www.fazenda.mg.gov.br/empresas/legislacao_tributaria/ipva/duvidas_frequentes/",
   "uf": "MG",
-  "verifiedAt": "2026-10-02T16:12:57+00:00",
+  "verifiedAt": "2026-10-02T19:09:17+00:00",
   "year": 2026
 }

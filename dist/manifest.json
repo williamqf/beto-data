@@ -144,24 +144,269 @@
   },
   "generatedAt": "2026-09-29T21:04:56+00:00",
   "ipva": {
-    "datasetVersion": "43d49b1fc576f43b",
-    "schemaVersion": 1,
+    "coverage": {
+      "AC": {
+        "base": "Tabela estadual 2026 por tipo, marca e modelo; FIPE pode ser fallback estimado",
+        "baseSourceUrl": "https://sefaz.ac.gov.br/2021/?p=23209",
+        "blocker": "Correspondência da tabela estadual por veículo ainda não foi normalizada; verificar exceções vigentes.",
+        "rule": "2% para veículos de passeio",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://sefaz.ac.gov.br/2021/?p=21413",
+        "status": "PARTIAL"
+      },
+      "AL": {
+        "base": "Consulta oficial 2026 usa FIPE por veículo",
+        "baseSourceUrl": "https://ipvaonline.sefaz.al.gov.br/",
+        "blocker": "Potência, condição GNV/híbrido e elegibilidade não estão representadas com segurança no modelo atual.",
+        "rule": "2,75% a 3,25% conforme potência; GNV/híbrido 1,5%; elétrico 2%",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.al.gov.br/nise/faq/ipva/473-3-calculo-e-aliquotas",
+        "status": "PARTIAL"
+      },
+      "AM": {
+        "base": "Tabela por modelo publicada para exercício anterior; base 2026 não verificada",
+        "baseSourceUrl": "https://www.sefaz.am.gov.br/",
+        "blocker": "Regra condicionada a cilindrada e ano; documentação oficial de base 2026 não confirmada.",
+        "rule": "Regra varia por cilindrada; veículos elétricos/híbridos têm tratamento específico",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://online.sefaz.am.gov.br/doe/toPdf.asp?idPublicacao=2376",
+        "status": "PARTIAL"
+      },
+      "AP": {
+        "base": "Tabela oficial 2026 não confirmada",
+        "baseSourceUrl": "https://virtual.sefaz.ap.gov.br/",
+        "blocker": "Não foi possível confirmar regra e base oficial de 2026; manter entrada manual.",
+        "rule": "Não confirmada em fonte normativa oficial vigente nesta auditoria",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://virtual.sefaz.ap.gov.br/",
+        "status": "MANUAL_ONLY"
+      },
+      "BA": {
+        "base": "Tabela estadual oficial por modelo e ano para 2026; FIPE seria estimativa",
+        "baseSourceUrl": "https://www.sefaz.ba.gov.br/docs/inspetoria-eletronica/ipva/valor_venal_veiculo_2026.pdf",
+        "blocker": "A tabela oficial ainda não é resolvida pelo Android; exige validação do combustível e correspondência do modelo.",
+        "rule": "2,5% para combustíveis não diesel; 3% para diesel",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.ba.gov.br/inspetoria-eletronica/ipva/informacoes/",
+        "status": "PARTIAL"
+      },
+      "CE": {
+        "base": "Valores venais oficiais divulgados para 2026",
+        "baseSourceUrl": "https://www.sefaz.ce.gov.br/wp-content/uploads/sites/61/2020/08/Resumo_IPVA_2026_Sefaz.pdf",
+        "blocker": "Potência e classificação de elétrico não são obtidas com confiança suficiente pelo app.",
+        "rule": "2,5%, 3% ou 3,5% conforme potência; elétricos 2%–3%",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.ce.gov.br/wp-content/uploads/sites/61/2020/08/Resumo_IPVA_2026_Sefaz.pdf",
+        "status": "PARTIAL"
+      },
+      "DF": {
+        "base": "Pauta de Valores Venais 2026 prevista na Lei nº 7.827/2025",
+        "baseSourceUrl": "https://mobile.receita.fazenda.df.gov.br/aplicacoes/UltimasNormasPublicadas/TelaSaidaDocumento.cfm?txtAno=2026&txtNumero=1&txtParte=IPVA+2026&txtTipo=453",
+        "blocker": "A pauta não está normalizada; identificar veículos abrangidos pelas hipóteses especiais exige mais dados.",
+        "rule": "3% para automóveis; 3,5% em hipóteses específicas de benefício",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://mobile.receita.fazenda.df.gov.br/aplicacoes/UltimasNormasPublicadas/TelaSaidaDocumento.cfm?txtAno=2026&txtNumero=1&txtParte=IPVA+2026&txtTipo=453",
+        "status": "PARTIAL"
+      },
+      "ES": {
+        "base": "Tabela oficial estadual 2026 em PDFs por categoria",
+        "baseSourceUrl": "https://sefaz.es.gov.br/base-de-calculo",
+        "blocker": "Base estadual é pesquisa local e pode divergir da FIPE; ainda sem resolução exata por modelo.",
+        "rule": "2% para automóveis de passeio",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://sefaz.es.gov.br/informacoes-ipva",
+        "status": "PARTIAL"
+      },
+      "GO": {
+        "base": "Tabela oficial 2026 por marca, modelo, combustível e ano",
+        "baseSourceUrl": "https://goias.gov.br/economia/calendario-de-vencimentos/",
+        "blocker": "O Android não dispõe de potência confiável para escolher alíquota.",
+        "rule": "3% até 100 cv; 3,75% acima de 100 cv",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://goias.gov.br/economia/perguntas-e-respostas-6/",
+        "status": "PARTIAL"
+      },
+      "MA": {
+        "base": "Base anual estadual; tabela 2026 específica não confirmada nesta auditoria",
+        "baseSourceUrl": "https://www.sefaz.ma.gov.br/",
+        "blocker": "Faixa depende do valor venal e há desconto vinculado a dados pessoais que o app não coleta.",
+        "rule": "2,5% até R$ 150 mil; 3% acima; desconto condicionado à situação do condutor",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.al.ma.leg.br/sitealema/wp-content/uploads/2025/12/DIARIO_221_18.12.2025.pdf",
+        "status": "PARTIAL"
+      },
+      "MG": {
+        "base": "Tabela estadual 2026; fallback FIPE compatível",
+        "baseSourceUrl": "https://diarioeletronico.fazenda.mg.gov.br/opendiariogeral/resultados-ipva/index.html",
+        "blocker": "A tabela estadual não está integrada ao app; estimativas usam FIPE compatível.",
+        "rule": "4% geral; combustível exclusivamente álcool tem redução de 30% da base",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.fazenda.mg.gov.br/empresas/legislacao_tributaria/ipva/duvidas_frequentes/",
+        "status": "SUPPORTED_ESTIMATED_BASE"
+      },
+      "MS": {
+        "base": "FIPE contratada pelo Estado para valor venal",
+        "baseSourceUrl": "https://www.sefaz.ms.gov.br/ipva/",
+        "blocker": "Reduções GNV/frotista e separação novo/usado precisam de dados que a seleção atual não fornece.",
+        "rule": "Veículos usados: 3% passeio comum; 4,5% passeio diesel; GNV tem redução",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.ms.gov.br/ipva/",
+        "status": "PARTIAL"
+      },
+      "MT": {
+        "base": "Tabela estadual de valores venais 2026",
+        "baseSourceUrl": "https://www5.sefaz.mt.gov.br/servicos?c=75032612&e=75032935",
+        "blocker": "Cilindrada é necessária para selecionar a alíquota; base por modelo ainda não integrada.",
+        "rule": "2% até 1.000 cm³; 3% nas demais categorias de passeio",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www5.sefaz.mt.gov.br/documents/6071037/10218152/AL%C3%8DQUOTAS%2BIPVA.pdf/f1a8491d-484b-5876-2d54-382813d76121",
+        "status": "PARTIAL"
+      },
+      "PA": {
+        "base": "Tabela estadual 2026 publicada por modelo ainda não confirmada",
+        "baseSourceUrl": "https://site-sefa-wordpress.sefa.pa.gov.br/",
+        "blocker": "Regra legal encontrada, mas tabela do exercício 2026 e exceções não foram confirmadas.",
+        "rule": "2,5% para automóveis e caminhonetes",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://site-sefa-wordpress.sefa.pa.gov.br/wp-content/uploads/legislacao/leis_estaduais/lp1996_06017.pdf",
+        "status": "PARTIAL"
+      },
+      "PB": {
+        "base": "Relatório oficial de valores do IPVA 2026 por marca/modelo/ano",
+        "baseSourceUrl": "https://www.sefaz.pb.gov.br/legislacao/382-portarias/portarias-2025/17092-portaria-n-00218-2025-sefaz",
+        "blocker": "A base por modelo existe, mas ainda não tem resolução confiável no app.",
+        "rule": "2,5% para automóveis",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.pb.gov.br/legislacao/65-leis/ipva/5032-lei-n-11-007-de-06-de-novembro-de-2017",
+        "status": "PARTIAL"
+      },
+      "PE": {
+        "base": "Tabela estadual 2026 com base, alíquota e valor por modelo",
+        "baseSourceUrl": "https://www.sefaz.pe.gov.br/Servicos/IPVA/Valores%20de%20IPVA/Tabela%20IPVA%202026.pdf",
+        "blocker": "A regra especial depende do combustível, valor, comprovação de adaptação e ano; exige condições ainda ausentes.",
+        "rule": "2,4% geral; GNV até R$ 100 mil 1,5%; elétrico isento; 20 anos ou mais sem incidência",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/Leis_Tributarias/2023/Lei18305_2023.htm",
+        "status": "PARTIAL"
+      },
+      "PI": {
+        "base": "Tabela oficial 2026 não confirmada",
+        "baseSourceUrl": "https://www.sefaz.pi.gov.br/",
+        "blocker": "Fonte normativa consultada está consolidada somente até 2011; não automatizar sem validar alterações posteriores e base 2026.",
+        "rule": "Lei localizada indica 2,5% para automóveis, mas consolidação vigente em 2026 não confirmada",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.pi.gov.br/arquivos/legislacao/leis/Lei4548.pdf",
+        "status": "MANUAL_ONLY"
+      },
+      "PR": {
+        "base": "Referência FIPE compatível; valor estadual não integrado",
+        "baseSourceUrl": "https://www.fazenda.pr.gov.br/Noticia/Com-reducao-de-45-Parana-tera-menor-aliquota-de-IPVA-do-Brasil-em-2026",
+        "blocker": "Base oficial exata não está integrada; GNV é regra separada.",
+        "rule": "1,9% geral para automóveis; 1% GNV",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.fazenda.pr.gov.br/Pagina/Calcule-agora-seu-IPVA-2026",
+        "status": "SUPPORTED_ESTIMATED_BASE"
+      },
+      "RJ": {
+        "base": "A SEFAZ publica base venal anual; vínculo 2026/modelo requer validação",
+        "baseSourceUrl": "https://portal.fazenda.rj.gov.br/ipva/",
+        "blocker": "Regra/fonte 2026 não validada; combustível e tratamentos especiais impedem inferência.",
+        "rule": "Não confirmada em fonte normativa oficial específica de 2026 nesta auditoria",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://portal.fazenda.rj.gov.br/ipva/",
+        "status": "MANUAL_ONLY"
+      },
+      "RN": {
+        "base": "Tabela anual oficial disponível via consulta individual; regra/base 2026 não confirmadas",
+        "baseSourceUrl": "https://www.sefaz.rn.gov.br/postagem/ipva/",
+        "blocker": "Alíquota de passeio e tabela 2026 não foram confirmadas; isenção por idade e propulsão aumenta o risco.",
+        "rule": "Regra de isenção inclui veículos rodoviários com mais de 10 anos e veículos elétricos",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.rn.gov.br/postagem/ipva-imunidades-isencoes-dispensa/",
+        "status": "MANUAL_ONLY"
+      },
+      "RO": {
+        "base": "Tabela oficial 2026 não confirmada",
+        "baseSourceUrl": "https://www.sefin.ro.gov.br/",
+        "blocker": "Sem fonte normativa e base do exercício 2026 verificadas.",
+        "rule": "Não confirmada em fonte oficial vigente do exercício 2026 nesta auditoria",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefin.ro.gov.br/",
+        "status": "MANUAL_ONLY"
+      },
+      "RR": {
+        "base": "Portaria/tabela 2026 existe, mas sem regra geral de passeio validada",
+        "baseSourceUrl": "https://www.sefaz.rr.gov.br/downloads/legislacao",
+        "blocker": "Norma 2026 altera regras de pagamento e redução; sem alíquota de passeio confirmada.",
+        "rule": "Lei nº 059/1993 prevê exceções; alíquota geral de passeio não confirmada na fonte consultada",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.rr.gov.br/downloads/legislacao",
+        "status": "MANUAL_ONLY"
+      },
+      "RS": {
+        "base": "Valor médio divulgado anualmente pelo Poder Executivo",
+        "baseSourceUrl": "https://www.sefaz.rs.gov.br/ASP/SEF_ROOT/INF/ipva-index.htm",
+        "blocker": "Página pública de alíquotas está desatualizada e não confirma a regra de exercício 2026; FIPE não pode ser tratada como base oficial.",
+        "rule": "3% para automóveis; elétricos isentos; veículos com mais de 20 anos isentos",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.rs.gov.br/ASP/SEF_ROOT/INF/ipva-index.htm",
+        "status": "PARTIAL"
+      },
+      "SC": {
+        "base": "Tabelas oficiais 2026 de base e IPVA por modelo",
+        "baseSourceUrl": "https://www.sef.sc.gov.br/saiba-mais/ipva-imposto-sobre-veiculos-automotores",
+        "blocker": "A tabela oficial não está normalizada para correspondência; conferir exceções/limitações antes de usar FIPE.",
+        "rule": "2% para veículos de passeio",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://legislacao.sef.sc.gov.br/html/atos_diat/2025/atodiat_25_099.htm",
+        "status": "PARTIAL"
+      },
+      "SE": {
+        "base": "FIPE usada como valor de mercado para tabela 2026",
+        "baseSourceUrl": "https://www.sefaz.se.gov.br/SitePages/NoticiaDetalhes.aspx?cod=2810",
+        "blocker": "Escolha da alíquota depende do valor-base; condição ainda não existe no modelo Android.",
+        "rule": "2,5% se valor venal até R$ 120 mil; 3% acima",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.sefaz.se.gov.br/SitePages/NoticiaDetalhes.aspx?cod=2810",
+        "status": "PARTIAL"
+      },
+      "SP": {
+        "base": "Tabela estadual anual; fallback FIPE compatível",
+        "baseSourceUrl": "https://portal.fazenda.sp.gov.br/servicos/ipva/Paginas/perguntas-frequentes.aspx",
+        "blocker": "A tabela estadual não está integrada; propulsão deve ser confiável.",
+        "rule": "4% geral; 3% exclusivamente álcool, GNV ou eletricidade",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html",
+        "status": "SUPPORTED_ESTIMATED_BASE"
+      },
+      "TO": {
+        "base": "Valor médio de mercado fixado por ato da SEFAZ",
+        "baseSourceUrl": "https://ipva.sefaz.to.gov.br/legislacao.php",
+        "blocker": "A potência em cv, a idade para não incidência e a resolução da base oficial por modelo ainda não estão integradas.",
+        "rule": "2,5% até 100 cv e 3,5% acima de 100 cv; regra de não incidência para veículos com 20 anos ou mais",
+        "sourceName": "Fonte oficial estadual",
+        "sourceUrl": "https://dtri.sefaz.to.gov.br/legislacao/ntributaria/Leis/Lei1.287-01Consolidada.htm",
+        "status": "PARTIAL"
+      }
+    },
+    "datasetVersion": "cfa2ed620c45da2d",
+    "schemaVersion": 2,
     "years": {
       "2026": {
         "MG": {
           "path": "datasets/taxes/ipva/2026/MG.json",
           "recordCount": 2,
-          "sha256": "5620933c9d2a30b068fb393cb2ff70c18ed7e431c8a9e52885b8367b5c3a1920"
+          "sha256": "fb691ae466cc5664079c99db71662c6e341dcf6a9036cbce8a4c40e4fb1ba23a"
         },
         "PR": {
           "path": "datasets/taxes/ipva/2026/PR.json",
           "recordCount": 2,
-          "sha256": "5077dfed6933f60e1fe30ef14739dca82c6ae50bcd264e70148c6cdea6bd4417"
+          "sha256": "4e02e8d9c342b3e41a0d9621e16c53b8e7bf1f74a0b578b31d4e9334a97814fa"
         },
         "SP": {
           "path": "datasets/taxes/ipva/2026/SP.json",
           "recordCount": 2,
-          "sha256": "023cbe8d53a6cb38f740ea52a8ced6da9defd3d8b0119859416b758cbed7c93c"
+          "sha256": "daa01cd39f2c639ccdbd847fc93bed421a4e6ea22a9193b61d94560fa581d1c3"
         }
       }
     }

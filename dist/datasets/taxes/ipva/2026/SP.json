@@ -1,42 +1,74 @@
 {
   "baseSourceName": "SEFAZ/SP — tabela anual de valores venais do exercício",
   "baseSourceUrl": "https://portal.fazenda.sp.gov.br/servicos/ipva/Paginas/perguntas-frequentes.aspx",
-  "datasetVersion": "43d49b1fc576f43b",
-  "publishedAt": "2026-10-02T16:12:57+00:00",
+  "datasetVersion": "cfa2ed620c45da2d",
+  "publishedAt": "2026-10-02T19:09:17+00:00",
   "rules": [
     {
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "GASOLINE",
-          "FLEX",
-          "DIESEL"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "DIESEL"
+            ]
+          }
         ]
       },
-      "notes": "Regra geral para automóvel não abrangido por categoria, redução ou isenção específica. A base depende da tabela estadual anual.",
-      "rate": 4.0,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 4.0
+        }
+      ],
+      "id": "sp-passenger-standard",
+      "notes": "Regra geral para automóvel não abrangido por alíquota especial ou isenção.",
+      "priority": 10
     },
     {
       "baseType": "STATE_TABLE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "ETHANOL",
-          "GNV",
-          "ELECTRIC"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "ETHANOL",
+              "GNV",
+              "ELECTRIC"
+            ]
+          }
         ]
       },
-      "notes": "Alíquota legal reduzida para motor exclusivamente movido a álcool, GNV ou eletricidade; a identificação do tipo de veículo precisa ser confiável.",
-      "rate": 3.0,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 3.0
+        }
+      ],
+      "id": "sp-passenger-exclusive-fuel",
+      "notes": "Alíquota legal reduzida para motor exclusivamente movido a álcool, GNV ou eletricidade.",
+      "priority": 10
     }
   ],
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceName": "ALESP — Lei 13.296/2008, texto compilado",
   "sourceUrl": "https://www.al.sp.gov.br/repositorio/legislacao/lei/2008/lei-13296-23.12.2008.html",
   "uf": "SP",
-  "verifiedAt": "2026-10-02T16:12:57+00:00",
+  "verifiedAt": "2026-10-02T19:09:17+00:00",
   "year": 2026
 }

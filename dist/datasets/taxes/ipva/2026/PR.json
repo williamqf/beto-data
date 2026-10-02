@@ -1,41 +1,73 @@
 {
   "baseSourceName": "SEFA/PR — valor venal de mercado do veículo",
   "baseSourceUrl": "https://www.fazenda.pr.gov.br/Noticia/Com-reducao-de-45-Parana-tera-menor-aliquota-de-IPVA-do-Brasil-em-2026",
-  "datasetVersion": "43d49b1fc576f43b",
-  "publishedAt": "2026-10-02T16:12:57+00:00",
+  "datasetVersion": "cfa2ed620c45da2d",
+  "publishedAt": "2026-10-02T19:09:17+00:00",
   "rules": [
     {
       "baseType": "STATE_MARKET_REFERENCE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "GNV"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GNV"
+            ]
+          }
         ]
       },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 1.0
+        }
+      ],
+      "id": "pr-passenger-gnv",
       "notes": "Veículo movido a GNV: alíquota especial de 1%.",
-      "rate": 1.0,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "priority": 100
     },
     {
       "baseType": "STATE_MARKET_REFERENCE_WITH_FIPE_FALLBACK",
       "conditions": {
-        "fuelTypes": [
-          "GASOLINE",
-          "FLEX",
-          "DIESEL",
-          "ETHANOL"
+        "all": [
+          {
+            "field": "vehicleCategory",
+            "operator": "EQUALS",
+            "value": "PASSENGER_CAR"
+          },
+          {
+            "field": "fuelType",
+            "operator": "IN",
+            "value": [
+              "GASOLINE",
+              "FLEX",
+              "DIESEL",
+              "ETHANOL"
+            ]
+          }
         ]
       },
+      "effects": [
+        {
+          "type": "RATE",
+          "value": 1.9
+        }
+      ],
+      "id": "pr-passenger-standard",
       "notes": "Regra geral de 1,9% para automóveis no exercício 2026. Categorias especiais não cobertas permanecem manuais.",
-      "rate": 1.9,
-      "supported": true,
-      "vehicleCategory": "PASSENGER_CAR"
+      "priority": 10
     }
   ],
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceName": "SEFA/PR — regras e alíquotas IPVA 2026",
   "sourceUrl": "https://www.fazenda.pr.gov.br/Pagina/Calcule-agora-seu-IPVA-2026",
   "uf": "PR",
-  "verifiedAt": "2026-10-02T16:12:57+00:00",
+  "verifiedAt": "2026-10-02T19:09:17+00:00",
   "year": 2026
 }

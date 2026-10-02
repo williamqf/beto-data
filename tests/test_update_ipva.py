@@ -10,24 +10,30 @@ class IpvaPipelineTests(unittest.TestCase):
     def setUp(self):
         self.now = datetime(2026, 10, 2, tzinfo=timezone.utc)
 
-    def test_builds_versioned_2026_rules_for_only_mg_sp_pr_and_preserves_other_manifest_branches(self):
+    def test_builds_versioned_2026_rules_and_national_coverage_without_losing_other_manifest_branches(self):
         previous = {"schemaVersion": 1, "datasetVersion": "fuel-x", "vehicleEfficiency": {"datasetVersion": "pbe-x"}}
         files = {"datasets/fuel/old/BR.json": b"old fuel"}
         built = update_ipva.build_files(previous, files, self.now)
         manifest = json.loads(built["manifest.json"])
         self.assertEqual({"MG", "SP", "PR"}, set(manifest["ipva"]["years"]["2026"]))
+        self.assertEqual(update_ipva.UF_CODES, set(manifest["ipva"]["coverage"]))
+        self.assertEqual(3, sum(row["status"] == "SUPPORTED_ESTIMATED_BASE" for row in manifest["ipva"]["coverage"].values()))
+        self.assertEqual(18, sum(row["status"] == "PARTIAL" for row in manifest["ipva"]["coverage"].values()))
+        self.assertEqual(6, sum(row["status"] == "MANUAL_ONLY" for row in manifest["ipva"]["coverage"].values()))
         self.assertEqual("pbe-x", manifest["vehicleEfficiency"]["datasetVersion"])
         self.assertEqual("fuel-x", manifest["datasetVersion"])
         for uf, entry in manifest["ipva"]["years"]["2026"].items():
             body = built[entry["path"]]
             self.assertEqual(entry["sha256"], hashlib.sha256(body).hexdigest())
             dataset = json.loads(body)
-            self.assertEqual((uf, 2026, 1), (dataset["uf"], dataset["year"], dataset["schemaVersion"]))
+            self.assertEqual((uf, 2026, 2), (dataset["uf"], dataset["year"], dataset["schemaVersion"]))
             self.assertTrue(dataset["sourceUrl"].startswith("https://"))
             if uf == "SP":
-                self.assertEqual([4.0, 3.0], [rule["rate"] for rule in dataset["rules"]])
-                self.assertEqual(["GASOLINE", "FLEX", "DIESEL"], dataset["rules"][0]["conditions"]["fuelTypes"])
-                self.assertEqual(["ETHANOL", "GNV", "ELECTRIC"], dataset["rules"][1]["conditions"]["fuelTypes"])
+                self.assertEqual([4.0, 3.0], [rule["effects"][0]["value"] for rule in dataset["rules"]])
+                self.assertEqual("PASSENGER_CAR", dataset["rules"][0]["conditions"]["all"][0]["value"])
+                self.assertEqual(["GASOLINE", "FLEX", "DIESEL"], dataset["rules"][0]["conditions"]["all"][1]["value"])
+                self.assertEqual(["ETHANOL", "GNV", "ELECTRIC"], dataset["rules"][1]["conditions"]["all"][1]["value"])
+                self.assertEqual(2, manifest["ipva"]["schemaVersion"])
 
     def test_validation_blocks_changed_official_source_markers(self):
         config = update_ipva.RULES
@@ -42,11 +48,36 @@ class IpvaPipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Fonte MG mudou"):
             update_ipva.validate_sources(lambda url: responses[url])
 
-    def test_no_supported_uf_is_added_implicitly(self):
+    def test_unsupported_ufs_are_explicitly_manual_or_partial_instead_of_receiving_fake_rules(self):
         built = update_ipva.build_files({}, {}, self.now)
         manifest = json.loads(built["manifest.json"])
         self.assertNotIn("RJ", manifest["ipva"]["years"]["2026"])
         self.assertNotIn("SC", manifest["ipva"]["years"]["2026"])
+        self.assertEqual("MANUAL_ONLY", manifest["ipva"]["coverage"]["RJ"]["status"])
+        self.assertEqual("PARTIAL", manifest["ipva"]["coverage"]["SC"]["status"])
+
+    def test_coverage_sources_must_be_official_https(self):
+        self.assertEqual(update_ipva.UF_CODES, set(update_ipva.COVERAGE_2026))
+        for row in update_ipva.COVERAGE_2026.values():
+            self.assertTrue(row["source"].startswith("https://"))
+            self.assertTrue(row["baseSource"].startswith("https://"))
+
+    def test_schema_v2_validation_rejects_or_unknown_fields_operators_and_bad_effect_order(self):
+        valid = {
+            "id": "range-rule", "priority": 10,
+            "conditions": {"all": [{"field": "enginePowerHp", "operator": "BETWEEN", "value": [80, 120]}]},
+            "effects": [{"type": "BASE_REDUCTION", "value": 0.3}, {"type": "RATE", "value": 4.0}],
+        }
+        update_ipva.validate_v2_rule(valid)
+        invalid_rules = [
+            {**valid, "conditions": {"any": []}},
+            {**valid, "conditions": {"all": [{"field": "random", "operator": "EQUALS", "value": "x"}]}},
+            {**valid, "conditions": {"all": [{"field": "fuelType", "operator": "NOT_IN", "value": ["GNV"]}]}},
+            {**valid, "effects": [{"type": "RATE", "value": 4.0}, {"type": "BASE_REDUCTION", "value": 0.3}]},
+        ]
+        for rule in invalid_rules:
+            with self.assertRaises(ValueError):
+                update_ipva.validate_v2_rule(rule)
 
 
 if __name__ == "__main__":

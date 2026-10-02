@@ -44,6 +44,50 @@ O manifesto público integrado é [`https://williamqf.github.io/beto-data/manife
 
 Esses links ficam ativos depois que o repositório público e o GitHub Pages recebem esta versão. O Android baixa o manifesto e o dataset da UF, valida schema, exercício, versão, checksum e origem, e mantém cópia válida local para uso offline. Se não houver dados remotos nem cache, o fluxo continua com entrada manual.
 
+#### Cobertura IPVA 2026 — auditoria nacional
+
+O ramo `ipva.coverage` do manifesto enumera as 27 UFs. Ele registra se há regra executável, cobertura parcial ou fallback manual; **não cria datasets vazios nem alíquotas para UFs sem validação**. Nesta auditoria, somente MG, SP e PR têm regras ativas no Android; as estimativas usam FIPE compatível e continuam classificadas como base estimada. Nenhuma UF tem base estadual exata integrada ao cálculo do Android.
+
+| UF | Status | Regra de passeio identificada | Base oficial 2026 | Limitação para automação |
+|---|---|---|---|---|
+| AC | PARTIAL | 2% | Tabela por tipo, marca e modelo | Base sem correspondência normalizada; exceções pendentes |
+| AL | PARTIAL | 2,75%–3,25% por potência; GNV/híbrido 1,5%; elétrico 2% | Consulta oficial usa valor FIPE | Potência e condições especiais não chegam confiáveis ao motor |
+| AP | MANUAL_ONLY | Não confirmada nesta auditoria | Não confirmada | Regra e base oficial do exercício não validadas |
+| AM | PARTIAL | Regra diferenciada por cilindrada; elétrica/híbrida específica | Tabela 2026 não verificada | Cilindrada e base 2026 não confirmadas |
+| BA | PARTIAL | 2,5% combustíveis não diesel; 3% diesel | Tabela estadual por modelo/ano | Parser/matching oficial ainda não integrado |
+| CE | PARTIAL | 2,5% / 3% / 3,5% por potência; elétrica 2%–3% | Valores venais oficiais | Potência e classe elétrica ausentes |
+| DF | PARTIAL | 3%; há hipóteses específicas de 3,5% | Pauta de Valores Venais 2026 | Base não normalizada e hipóteses especiais sem identificação |
+| ES | PARTIAL | 2% | Tabelas estaduais em PDFs por categoria | Base local pode divergir da FIPE e não está resolvida por modelo |
+| GO | PARTIAL | 3% até 100 cv; 3,75% acima | Tabela oficial por marca/modelo/ano | Potência não disponível com confiança |
+| MA | PARTIAL | 2,5% até R$ 150 mil; 3% acima | Tabela 2026 não confirmada nesta auditoria | Faixa pelo valor e desconto por condição pessoal |
+| MT | PARTIAL | 2% até 1.000 cm³; 3% demais passeios | Tabela estadual 2026 | Cilindrada e matching por modelo |
+| MS | PARTIAL | Usado comum 3%; diesel 4,5%; GNV tem redução | FIPE contratada pelo Estado | Novo/usado, GNV e frotista não identificados pelo app |
+| MG | SUPPORTED_ESTIMATED_BASE | 4%; exclusivamente álcool reduz base em 30% | Tabela estadual; fallback FIPE | Tabela estadual exata ainda não integrada |
+| PA | PARTIAL | 2,5% automóveis/caminhonetes | Base 2026 não confirmada nesta auditoria | Verificar publicação do exercício e exceções |
+| PB | PARTIAL | 2,5% automóveis | Relatório oficial 2026 por modelo/ano | Correspondência por modelo ainda não integrada |
+| PR | SUPPORTED_ESTIMATED_BASE | 1,9%; GNV 1% | FIPE como fallback estimado | Base oficial exata ainda não integrada |
+| PE | PARTIAL | Geral 2,4%; GNV elegível até R$ 100 mil 1,5%; elétrico isento | Tabela estadual 2026 | GNV depende de valor/comprovação; isenção por idade |
+| PI | MANUAL_ONLY | Lei localizada indica 2,5%, mas vigência consolidada não confirmada | Tabela 2026 não confirmada | Fonte legal consultada está consolidada até 2011 |
+| RJ | MANUAL_ONLY | Não confirmada em fonte normativa específica de 2026 | Base anual precisa de vínculo confiável | Regra/exceções de 2026 não validadas |
+| RN | MANUAL_ONLY | Alíquota de passeio não confirmada | Tabela 2026 não confirmada | Há isenção por idade e para elétricos |
+| RS | PARTIAL | 3%; elétricos isentos; mais de 20 anos isentos | Valor médio anual do Executivo | Página de alíquotas encontrada está desatualizada |
+| RO | MANUAL_ONLY | Não confirmada em fonte oficial de 2026 | Não confirmada | Regra e base não verificadas |
+| RR | MANUAL_ONLY | Alíquota geral de passeio não confirmada | Tabela anual existe, vínculo pendente | Regra 2026 não validada |
+| SC | PARTIAL | 2% | Tabelas estaduais 2026 por modelo | Dados ainda sem correspondência automática |
+| SP | SUPPORTED_ESTIMATED_BASE | 4% geral; 3% exclusivamente álcool, GNV ou eletricidade | Tabela estadual; fallback FIPE | Tabela estadual exata não integrada |
+| SE | PARTIAL | 2,5% até R$ 120 mil; 3% acima | FIPE utilizada para valor de mercado | Seleção da alíquota depende da base monetária |
+| TO | PARTIAL | 2,5% até 100 cv; 3,5% acima de 100 cv; não incidência a partir de 20 anos | Valor médio fixado pela SEFAZ | Potência, idade e base exata não integradas |
+
+**Contagem publicada:** 0 `SUPPORTED_EXACT`, 3 `SUPPORTED_ESTIMATED_BASE`, 18 `PARTIAL` e 6 `MANUAL_ONLY`. `PARTIAL` significa que há uma regra ou base oficial identificada, mas os dados disponíveis no app não permitem aplicá-la sem risco; o cálculo permanece manual até a condição faltante ser implementada e validada. Os links oficiais individuais de regra e base estão no objeto `ipva.coverage` de [`manifest.json`](https://williamqf.github.io/beto-data/manifest.json). Esta matriz não autoriza tratar FIPE como base oficial exata.
+
+#### Schema declarativo IPVA v2
+
+O manifesto e os datasets IPVA ativos usam `schemaVersion: 2`. Cada regra tem `id`, `priority`, `conditions.all` (AND) e uma lista ordenada de `effects`. Os operadores suportados são `EQUALS`, `IN`, `GT`, `GTE`, `LT`, `LTE` e `BETWEEN`; OR ainda não faz parte do schema. Efeitos disponíveis: `RATE` (percentual), `BASE_REDUCTION` (proporção reduzida da base, aplicada antes da alíquota) e `EXEMPT` (efeito único). A regra geral pode usar `all: []`; prioridades maiores vencem regras gerais. Regras de mesma prioridade com resultados distintos devem cair para diagnóstico manual no Android.
+
+Campos declarados disponíveis no contexto: `uf`, `taxYear`, `vehicleCategory`, `vehicleType`, `usageType`, `manufactureYear`, `modelYear`, `vehicleAge` (derivada), `fuelType`, `enginePowerHp`, `engineDisplacementCc` e `referenceValue`. Campos não disponíveis não são inferidos. Se uma regra prioritária puder corresponder, mas depender de campo ausente, o app retorna `RULE_DATA_MISSING` em vez de aplicar uma alíquota geral. Potência e cilindrada continuam nulas até haver fonte confiável.
+
+MG, SP e PR foram convertidos para v2 preservando as mesmas condições, alíquotas e redução existente de base em MG. Os testes Android comparam seus resultados antes/depois da forma declarativa. O leitor Android continua aceitando datasets v1 em cache e downloads v1, além de v2; versões futuras desconhecidas são rejeitadas sem apagar um cache compatível. Esta mudança de schema não adiciona UFs automáticas nem altera os status da matriz.
+
 ## Estrutura
 
 ```text
