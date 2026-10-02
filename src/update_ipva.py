@@ -136,7 +136,7 @@ RULES = {
     },
     "PB": {
         "sourceName": "SEFAZ/PB — Lei nº 11.007/2017 e regras IPVA 2026",
-        "sourceUrl": "https://www.sefaz.pb.gov.br/announcements/5033-nova-lei-do-imposto-sobre-a-propriedade-de-veiculos-automotores-ipva-lei-11-007",
+        "sourceUrl": "https://www.sefaz.pb.gov.br/legislacao/65-leis/ipva/5032-lei-n-11-007-de-06-de-novembro-de-2017",
         "baseSourceName": "SEFAZ/PB — Portaria nº 218/2025, valores IPVA 2026",
         "baseSourceUrl": "https://www.sefaz.pb.gov.br/legislacao/382-portarias/portarias-2025/17092-portaria-n-00218-2025-sefaz",
         "markers": ["2,5%"], "baseMarkers": [],
