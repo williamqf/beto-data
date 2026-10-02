@@ -6,12 +6,15 @@ import argparse
 import hashlib
 import json
 import re
+import socket
+import time
 import unicodedata
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 import shutil
 import tempfile
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -267,11 +270,19 @@ class TextExtractor(HTMLParser):
 
 def fetch_source(url: str, timeout: int = 25) -> str:
     request = Request(url, headers={"User-Agent": "Beto-Data-IPVA/1.0 (+https://github.com/williamqf/beto-data)"})
-    with urlopen(request, timeout=timeout) as response:
-        if response.status != 200:
-            raise ValueError(f"Fonte oficial respondeu HTTP {response.status}: {url}")
-        encoding = response.headers.get_content_charset() or "utf-8"
-        raw = response.read()
+    for attempt in range(2):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                if response.status != 200:
+                    raise ValueError(f"Fonte oficial respondeu HTTP {response.status}: {url}")
+                encoding = response.headers.get_content_charset() or "utf-8"
+                raw = response.read()
+            break
+        except (TimeoutError, socket.timeout, ConnectionError, URLError) as error:
+            reason = error.reason if isinstance(error, URLError) else error
+            if attempt == 1 or not isinstance(reason, (TimeoutError, socket.timeout, ConnectionError, OSError)):
+                raise
+            time.sleep(1)
     parser = TextExtractor()
     parser.feed(raw.decode(encoding, errors="replace"))
     return " ".join(parser.parts)

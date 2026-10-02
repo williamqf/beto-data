@@ -1,7 +1,10 @@
 import hashlib
 import json
+import socket
 import unittest
 from datetime import datetime, timezone
+from unittest.mock import patch
+from urllib.error import URLError
 
 from src import update_ipva
 
@@ -57,6 +60,33 @@ class IpvaPipelineTests(unittest.TestCase):
     def test_source_connection_failures_name_the_state_and_url(self):
         with self.assertRaisesRegex(RuntimeError, r"Fonte oficial de AC indisponível.*sefaz\.ac\.gov\.br"):
             update_ipva.validate_sources(lambda url: (_ for _ in ()).throw(TimeoutError("fixture timeout")))
+
+    def test_fetch_source_retries_one_transient_timeout(self):
+        class Response:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            @property
+            def headers(self):
+                class Headers:
+                    @staticmethod
+                    def get_content_charset():
+                        return "utf-8"
+                return Headers()
+
+            @staticmethod
+            def read():
+                return b"<p>fonte oficial</p>"
+
+        with patch("src.update_ipva.urlopen", side_effect=[URLError(socket.timeout("transient")), Response()]) as open_url:
+            with patch("src.update_ipva.time.sleep"):
+                self.assertEqual("fonte oficial", update_ipva.fetch_source("https://example.gov.br", timeout=1))
+        self.assertEqual(2, open_url.call_count)
 
     def test_unsupported_ufs_are_explicitly_manual_or_partial_instead_of_receiving_fake_rules(self):
         built = update_ipva.build_files({}, {}, self.now)
