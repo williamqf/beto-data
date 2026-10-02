@@ -144,24 +144,24 @@
   },
   "generatedAt": "2026-09-29T21:04:56+00:00",
   "ipva": {
-    "datasetVersion": "907a7d7c29cd8d54",
+    "datasetVersion": "43d49b1fc576f43b",
     "schemaVersion": 1,
     "years": {
       "2026": {
         "MG": {
           "path": "datasets/taxes/ipva/2026/MG.json",
           "recordCount": 2,
-          "sha256": "77f6e611d249ff5f8ecd5e242dd0e34d06c0bb2ef034f7e54ef4fb5c8de68c13"
+          "sha256": "5620933c9d2a30b068fb393cb2ff70c18ed7e431c8a9e52885b8367b5c3a1920"
         },
         "PR": {
           "path": "datasets/taxes/ipva/2026/PR.json",
           "recordCount": 2,
-          "sha256": "0135c4499b44bf42a87a84b972526dce7c21448a58e944e4c0d8f299fe5dd1e0"
+          "sha256": "5077dfed6933f60e1fe30ef14739dca82c6ae50bcd264e70148c6cdea6bd4417"
         },
         "SP": {
           "path": "datasets/taxes/ipva/2026/SP.json",
-          "recordCount": 1,
-          "sha256": "610416ea670c54a364f5daa0d4603d73c977f8ab3d2a9debff0a60ca61cfb542"
+          "recordCount": 2,
+          "sha256": "023cbe8d53a6cb38f740ea52a8ced6da9defd3d8b0119859416b758cbed7c93c"
         }
       }
     }

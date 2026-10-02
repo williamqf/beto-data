@@ -24,6 +24,10 @@ class IpvaPipelineTests(unittest.TestCase):
             dataset = json.loads(body)
             self.assertEqual((uf, 2026, 1), (dataset["uf"], dataset["year"], dataset["schemaVersion"]))
             self.assertTrue(dataset["sourceUrl"].startswith("https://"))
+            if uf == "SP":
+                self.assertEqual([4.0, 3.0], [rule["rate"] for rule in dataset["rules"]])
+                self.assertEqual(["GASOLINE", "FLEX", "DIESEL"], dataset["rules"][0]["conditions"]["fuelTypes"])
+                self.assertEqual(["ETHANOL", "GNV", "ELECTRIC"], dataset["rules"][1]["conditions"]["fuelTypes"])
 
     def test_validation_blocks_changed_official_source_markers(self):
         config = update_ipva.RULES
