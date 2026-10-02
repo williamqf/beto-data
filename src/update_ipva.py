@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 import shutil
+import sys
 import tempfile
 from urllib.error import URLError
 from urllib.request import Request, urlopen
@@ -294,7 +295,7 @@ def fetch_source(url: str, timeout: int = 25) -> str:
 
 def validate_sources(fetcher=fetch_source) -> None:
     for uf, config in RULES.items():
-        print(f"Validando fonte oficial do IPVA {uf}: {config['sourceUrl']}", flush=True)
+        print(f"Validando fonte oficial do IPVA {uf}: {config['sourceUrl']}", file=sys.stderr, flush=True)
         try:
             text = normalized(fetcher(config["sourceUrl"]))
         except Exception as error:
@@ -303,7 +304,7 @@ def validate_sources(fetcher=fetch_source) -> None:
             if normalized(marker) not in text:
                 raise ValueError(f"Fonte {uf} mudou ou não confirma o marcador esperado: {marker}")
         if config.get("baseMarkers"):
-            print(f"Validando base oficial do IPVA {uf}: {config['baseSourceUrl']}", flush=True)
+            print(f"Validando base oficial do IPVA {uf}: {config['baseSourceUrl']}", file=sys.stderr, flush=True)
             try:
                 base_text = normalized(fetcher(config["baseSourceUrl"]))
             except Exception as error:
